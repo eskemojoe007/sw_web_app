@@ -1,0 +1,52 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "359990edc9139c45f9e7abd4c0cfeac346678fda1bce4da60ca48ed1c1aadf7a"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.6"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.python.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "django": {
+            "hashes": [
+                "sha256:2d8b9eed8815f172a8e898678ae4289a5e9176bc08295676eff4228dd638ea61",
+                "sha256:d81a1652963c81488e709729a80b510394050e312f386037f26b54912a3a10d0"
+            ],
+            "index": "pypi",
+            "version": "==2.0.4"
+        },
+        "django-timezone-field": {
+            "hashes": [
+                "sha256:4d49aa24f5e005b98617b7270f064e487254119ed52bf233f5ca2a74be455720",
+                "sha256:826c046758de29fd199657c113a1886f2bf951d8568554466f666b51e097e1c2"
+            ],
+            "index": "pypi",
+            "version": "==2.1"
+        },
+        "geopy": {
+            "hashes": [
+                "sha256:2450f7f85b1fe980b0a3f2e09117ae1ace34e4b9034d52e2e782f486a5a8036c",
+                "sha256:d53a31df9cfb5591fa96a35da9f02ef3c67241e3c32d7cd82d4d94211d46d6a0"
+            ],
+            "index": "pypi",
+            "version": "==1.12.0"
+        },
+        "pytz": {
+            "hashes": [
+                "sha256:65ae0c8101309c45772196b21b74c46b2e5d11b6275c45d251b150d5da334555",
+                "sha256:c06425302f2cf668f1bba7a0a03f3c1d34d4ebeef2c72003da308b3947c7f749"
+            ],
+            "version": "==2018.4"
+        }
+    },
+    "develop": {}
+}

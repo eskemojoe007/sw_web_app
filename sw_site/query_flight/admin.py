@@ -1,14 +1,61 @@
 from django.contrib import admin
 from .models import Airport
+from django.utils.translation import gettext_lazy as _
 
 # Register your models here.
+class SW_Filter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = _('Southwest Airport')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'sw_airport'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        return (
+            ('SW_Only', _('SW Airports Only')),
+            ('Non_SW', _('Non SW Airports')),
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        # super().queryset(args)
+        # Compare the requested value (either '80s' or '90s')
+        # to decide how to filter the queryset.
+        # if self.value() is 'All':
+        #     return queryset
+
+        if self.value()=='SW_Only':
+            return queryset.filter(sw_airport=True)
+
+        if self.value() =='Non_SW':
+            return queryset.filter(sw_airport=False)
+
+    # def value(self):
+    #     value = super().value()
+    #     if value is None:
+    #         value = 'SW_Only'
+    #     return str(value)
 class AirportAdmin(admin.ModelAdmin):
     # fields = ['pub_date','question_text']
     fieldsets = [
     ('Title', {'fields':['title','abrev','sw_airport']}),
-    ('Location Information', {'fields':['timezone','lattitude','longitude']})
+    ('Location Information', {'fields':['timezone','lattitude','longitude']}),
+    ('Optional Location Data',{'fields':['country','state'],'classes': ['collapse in',]})
     ]
-    list_display = ('__str__', 'sw_airport','get_state')
-    list_filter = ['sw_airport']
+    list_display = ('__str__', 'sw_airport','state','country')
+    list_filter = [SW_Filter,]
+    # list_filter = ['sw_airport']
     search_fields = ['title']
 admin.site.register(Airport,AirportAdmin)

@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 Django = "*"
 django-timezone-field = "*"
-reverse-geocoder = "*"
+geopy = "*"
 
 [dev-packages]
 setuptools = "*"
