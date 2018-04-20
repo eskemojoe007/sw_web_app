@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Airport
 from django.utils.translation import gettext_lazy as _
 
-# Register your models here.
+# THis is a custom class used to change the tags for the filter for the airports
 class SW_Filter(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
     # right admin sidebar just above the filter options.
