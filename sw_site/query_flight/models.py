@@ -10,7 +10,7 @@ class Airport(models.Model):
     title = models.CharField(verbose_name='Long Name of Airport',max_length=50)
     timezone = TimeZoneField(default='US/Eastern')
     abrev = models.CharField(verbose_name='Airport Abreviation Code',max_length=4,primary_key=True)
-    lattitude = models.FloatField(validators=[MinValueValidator(-90),MaxValueValidator(90)])
+    latitude = models.FloatField(validators=[MinValueValidator(-90),MaxValueValidator(90)])
     longitude = models.FloatField(validators=[MinValueValidator(-180),MaxValueValidator(180)])
     sw_airport = models.BooleanField(verbose_name='Southwest Airport')
 
@@ -29,7 +29,7 @@ class Airport(models.Model):
     def _get_sub_loc(self,key):
         # Here we use geolocator to get the proper key
         geolocator = Nominatim()
-        location = geolocator.reverse("{:f}, {:f}".format(self.lattitude,self.longitude))
+        location = geolocator.reverse("{:f}, {:f}".format(self.latitude,self.longitude))
 
         # Lots and lots of error checking...looking for error from Geolocator
         # and for missing fields for international or other addresses
@@ -49,7 +49,7 @@ class Airport(models.Model):
             elif err == key:
                 raise ValidationError(_('Got a response from Geolocator, had an address, but didnt have key: %(key)s'),params={'key':err},code='no_{}'.format(err))
             else:
-                raise ValidationError(_('Got a response from Geolocator, had an address,KEY_ERROR of some kind'),code='some_key')
+                raise ValidationError(_('Got a response from Geolocator, had an address,KEY_ERROR of some kind %(raw)s'),params={'raw':location.raw},code='some_key')
         except:
             raise ValidationError(_('NO CLUE WHAT WENT WRONG'),code='no_clue')
 
@@ -62,7 +62,7 @@ class Airport(models.Model):
     def add_loc_fields(self):
         if (self.country is None) or (self.country == ''):
             self.country = self.get_country_code()
-        if (self.state is None) or (self.state == ''):
+        if ((self.state is None) or (self.state == '')) and self.country =='us':
             self.state = self.get_state()
 
     def save(self, *args, **kwargs):
