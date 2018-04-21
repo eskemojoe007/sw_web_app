@@ -80,8 +80,8 @@ class Airport(models.Model):
 class Flight(models.Model):
 
     # TODO: Need to add point support...but for now just dollars.
-    origin_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,verbose_name='Origin Airport')
-    destination_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,verbose_name='Destination Airport')
+    origin_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,related_name='+',verbose_name='Origin Airport')
+    destination_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,related_name='+',verbose_name='Destination Airport')
     depart_time = models.DateTimeField(verbose_name='Departure Time (UTC)')
     arrive_time = models.DateTimeField(verbose_name='Arrival Time (UTC)')
     wanna_get_away = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
@@ -97,4 +97,8 @@ class Flight(models.Model):
         return self.arrive_time - self.depart_time
 
     def min_price(self):
-        return np.min(self.wanna_get_away,self.anytime,self.business_select)
+        l = [x for x in [self.wanna_get_away,self.anytime,self.business_select] if (not x is None)]
+        if len(l)>0:
+            return np.min(l)
+        else:
+            return None

@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'timezone_field',
     'query_flight.apps.QueryFlightConfig',
     'django.contrib.admin',
     'django.contrib.auth',
