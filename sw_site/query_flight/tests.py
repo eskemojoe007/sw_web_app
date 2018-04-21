@@ -75,3 +75,6 @@ class AirportModelTests(TestCase):
         #Only testing the validators...not the save
         with self.assertRaises(ValidationError):
             airport.save()
+
+class FlightModelTests(TestCase):
+    def test 

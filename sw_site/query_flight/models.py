@@ -4,6 +4,7 @@ from geopy.geocoders import Nominatim
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
+import numpy as np
 
 class Airport(models.Model):
 
@@ -75,3 +76,25 @@ class Airport(models.Model):
         # Overwrite clean so we can add the fields and validate properly if they are missing.
         super().clean()
         self.add_loc_fields()
+
+class Flight(models.Model):
+
+    # TODO: Need to add point support...but for now just dollars.
+    origin_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,verbose_name='Origin Airport')
+    destination_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,verbose_name='Destination Airport')
+    depart_time = models.DateTimeField(verbose_name='Departure Time (UTC)')
+    arrive_time = models.DateTimeField(verbose_name='Arrival Time (UTC)')
+    wanna_get_away = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
+    anytime = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
+    business_select = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
+
+    def __str__(self):
+        # Return the title and abrev as the default string
+        return '{} - {}'.format(self.origin_airport.abrev,self.destination_airport.abrev)
+
+
+    def travel_time(self):
+        return self.arrive_time - self.depart_time
+
+    def min_price(self):
+        return np.min(self.wanna_get_away,self.anytime,self.business_select)

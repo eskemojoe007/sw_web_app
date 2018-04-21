@@ -51,11 +51,11 @@ class AirportAdmin(admin.ModelAdmin):
     # fields = ['pub_date','question_text']
     fieldsets = [
     ('Title', {'fields':['title','abrev','sw_airport']}),
-    ('Location Information', {'fields':['timezone','lattitude','longitude']}),
+    ('Location Information', {'fields':['timezone','latitude','longitude']}),
     ('Optional Location Data',{'fields':['country','state'],'classes': ['collapse in',]})
     ]
     list_display = ('__str__', 'sw_airport','state','country')
     list_filter = [SW_Filter,]
     # list_filter = ['sw_airport']
-    search_fields = ['title']
+    search_fields = ['title','abrev']
 admin.site.register(Airport,AirportAdmin)
