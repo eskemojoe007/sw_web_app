@@ -5,6 +5,9 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 import numpy as np
+# from django.utils import timezone
+import pytz
+from six import string_types
 
 class Airport(models.Model):
 
@@ -54,6 +57,13 @@ class Airport(models.Model):
         except:
             raise ValidationError(_('NO CLUE WHAT WENT WRONG'),code='no_clue')
 
+
+    def get_tz_obj(self):
+        if isinstance(self.timezone, string_types):
+            return pytz.timezone(self.timezone)
+        else:
+            return self.timezone
+
     def get_country_code(self):
         return self._get_sub_loc('country_code')
 
@@ -91,7 +101,6 @@ class Flight(models.Model):
     def __str__(self):
         # Return the title and abrev as the default string
         return '{} - {}'.format(self.origin_airport.abrev,self.destination_airport.abrev)
-
 
     def travel_time(self):
         return self.arrive_time - self.depart_time

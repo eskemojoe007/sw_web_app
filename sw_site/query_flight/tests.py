@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 from .models import Airport,Flight
 import pandas as pd
+from django.utils import timezone
 import pytz
 
 
@@ -86,7 +87,7 @@ class AirportModelTests(TestCase):
     # need to get string to obj working.
     def test_timezone_codes(self):
         airport = create_atl(timezone=pytz.timezone('US/Eastern'))
-        print(repr(airport.timezone))
+        # print(repr(airport.timezone))
         self.assertIs(airport.timezone,pytz.timezone('US/Eastern'))
 
     def test_timezone_bad_input(self):
@@ -120,7 +121,44 @@ class FlightModelTests(TestCase):
         self.assertIs(f.min_price(),None)
 
     def test_airport_connection(self):
-        a = Airport.objects.create(title='Atlanta',abrev='ATL',sw_airport=True,
-            latitude=33.6407,longitude=-84.4277)
+        a = create_atl()
         f = Flight(origin_airport=a)
         self.assertIs(f.origin_airport.country,a.country)
+
+    def test_tz_aware(self):
+        '''
+        Test the tz_aware of everything...so here we will build a real Flight
+        Then test the timezone of everything.
+        '''
+        a = create_atl()
+        b = create_atl(title='Boise',abrev='BOI',sw_airport=True,latitude=43.5658,
+            longitude=-116.2223,timezone = 'US/Mountain')
+
+        f = Flight(origin_airport=a,destination_airport=b,
+            depart_time=pd.to_datetime('2018-04-26 6:00 AM'),
+            arrive_time=pd.to_datetime('2018-04-26 1:50 PM'),
+            wanna_get_away=438.0,anytime=571.0,business_select=599.0)
+
+        f.save()
+
+        self.assertIs(f.depart_time.is_aware(),True)
+        self.assertIs(f.arrive_time.is_aware(),True)
+
+    # def test_tz_specifics(self):
+    #     '''
+    #     Test the tz_aware of everything...so here we will build a real Flight
+    #     Then test the timezone of everything.
+    #     '''
+    #     a = create_atl()
+    #     b = create_atl(title='Boise',abrev='BOI',sw_airport=True,latitude=43.5658,
+    #         longitude=-116.2223,timezone = 'US/Mountain')
+    #
+    #     f = Flight(origin_airport=a,destination_airport=b,
+    #         depart_time=pd.to_datetime('2018-04-26 6:00 AM'),
+    #         arrive_time=pd.to_datetime('2018-04-26 1:50 PM'),
+    #         wanna_get_away=438.0,anytime=571.0,business_select=599.0)
+    #
+    #     f.save()
+    #
+    #     self.assertIs(f.depart_time.is_aware(),True)
+    #     self.assertIs(f.arrive_time.is_aware(),True)
