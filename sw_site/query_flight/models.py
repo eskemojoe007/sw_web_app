@@ -5,7 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 import numpy as np
-# from django.utils import timezone
+from django.utils import timezone
 import pytz
 from six import string_types
 
@@ -111,3 +111,5 @@ class Flight(models.Model):
             return np.min(l)
         else:
             return None
+class Search(models.Model):
+    pass

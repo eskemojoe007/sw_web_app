@@ -13,6 +13,11 @@ def get_verify(proxies):
         return False
 
 class Command(BaseCommand):
+    '''
+    Southwest changed their website...and this no longer works.  they dont
+    have their locations listed out anymore.  Its crazy javascripted too.
+    Just to make me mad as I get closer!
+    '''
     args = '<foo bar ...>'
     help = 'use this to reach out to the web and get the sw airports'
 
@@ -77,9 +82,10 @@ class Command(BaseCommand):
         #             lattitude=33.6407,longitude=-84.4277)
 
     def handle(self, *args, **options):
-        proxies = {
-            'http': 'http://PITC-Zscaler-Americas-Alpharetta3PR.proxy.corporate.ge.com:80',
-            'https': 'http://PITC-Zscaler-Americas-Alpharetta3PR.proxy.corporate.ge.com:80'}
+        # proxies = {
+        #     'http': 'http://PITC-Zscaler-Americas-Alpharetta3PR.proxy.corporate.ge.com:80',
+        #     'https': 'http://PITC-Zscaler-Americas-Alpharetta3PR.proxy.corporate.ge.com:80'}
+        proxies = None
         # self._get_all_airports(proxies=proxies)
         # self._get_sw_airports(proxies=proxies)
 

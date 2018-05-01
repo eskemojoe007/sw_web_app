@@ -4,6 +4,9 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    re_path(r'^(?i)airport/(?P<airport_id>[\w-]{3})/$',views.airport,name='Airport')
-    # path('<str:airport_id>',views.airport,name='Airport')
+    # re_path(r'^(?i)airport/(?P<pk>[\w-]{3})/$',views.AirportView.as_view(),name='Airport'),
+    path('airport/<str:pk>/',views.AirportView.as_view(),name='Airport_Specific'),
+    path('airport/',views.AirportIndexView.as_view(),name='Airport'),
+    path('flight/new/',views.flight_new,name='New_Flight'),
+    path('search/new/',views.search,name='search'),
 ]

@@ -10,6 +10,7 @@ geopy = "*"
 requests = "*"
 "beautifulsoup4" = "*"
 pandas = "*"
+selenium = "*"
 
 [dev-packages]
 setuptools = "*"
