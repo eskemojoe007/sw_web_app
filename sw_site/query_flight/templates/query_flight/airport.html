@@ -1,1 +1,32 @@
-<h1>{{ airport.__str__ }}</h1>
+<h1>{{ airport.title }} - {{airport.abrev}}</h1>
+{# <h1>Welcome to airport</h1> #}
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #map {
+        height: 400px;
+        width: 400px;
+       }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      function initMap() {
+        var uluru = {lat: {{airport.latitude}}, lng: {{airport.longitude}}};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 8,
+          center: uluru
+        });
+        var marker = new google.maps.Marker({
+          position: uluru,
+          map: map
+        });
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0HYrYZneKaB2dduI80KcnqJicaSInIYY&callback=initMap">
+    </script>
+  </body>
+</html>

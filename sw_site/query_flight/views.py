@@ -9,5 +9,5 @@ def index(request):
 
 
 def airport(request,airport_id):
-    airport = get_object_or_404(Airport,pk=airport_id)
-    return render(request,'query_flight/airport.html')
+    airport = get_object_or_404(Airport,pk=airport_id.upper())
+    return render(request,'query_flight/airport.html',{'airport':airport})
