@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Airport,Flight
+from .models import Airport,Flight,Layover
 from django.utils.translation import gettext_lazy as _
 
 # THis is a custom class used to change the tags for the filter for the airports
@@ -47,6 +47,8 @@ class SW_Filter(admin.SimpleListFilter):
     #     if value is None:
     #         value = 'SW_Only'
     #     return str(value)
+class LayoverInline(admin.TabularInline):
+    model = Layover
 class AirportAdmin(admin.ModelAdmin):
     # fields = ['pub_date','question_text']
     fieldsets = [
@@ -55,12 +57,20 @@ class AirportAdmin(admin.ModelAdmin):
     ('Optional Location Data',{'fields':['country','state'],'classes': ['collapse in',]})
     ]
     list_display = ('__str__', 'sw_airport','state','country')
+
     list_filter = [SW_Filter,]
     # list_filter = ['sw_airport']
     search_fields = ['title','abrev']
 admin.site.register(Airport,AirportAdmin)
 class FlightAdmin(admin.ModelAdmin):
     # fields = ['pub_date','question_text']
-    list_display = ('pk','origin_airport','destination_airport','travel_time','min_price')
+    list_display = ('pk','origin_airport','destination_airport','travel_time','min_price','num_layovers')
+    inlines = [LayoverInline]
     # list_filter = ['sw_airport']
 admin.site.register(Flight,FlightAdmin)
+
+class LayoverAdmin(admin.ModelAdmin):
+    # fields = ['pub_date','question_text']
+    list_display = ('airport','get_timedelta','change_planes')
+    # list_filter = ['sw_airport']
+admin.site.register(Layover,LayoverAdmin)

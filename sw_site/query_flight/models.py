@@ -87,16 +87,21 @@ class Airport(models.Model):
         super().clean()
         self.add_loc_fields()
 
+
+# class Search(models.Model):
+
+
 class Flight(models.Model):
 
     # TODO: Need to add point support...but for now just dollars.
-    origin_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,related_name='+',verbose_name='Origin Airport')
-    destination_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,related_name='+',verbose_name='Destination Airport')
+    origin_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,related_name='origin_set',verbose_name='Origin Airport')
+    destination_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,related_name='destination_set',verbose_name='Destination Airport')
     depart_time = models.DateTimeField(verbose_name='Departure Time (UTC)')
     arrive_time = models.DateTimeField(verbose_name='Arrival Time (UTC)')
     wanna_get_away = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
     anytime = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
     business_select = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
+    # search = model.ForeignKey()
 
     def __str__(self):
         # Return the title and abrev as the default string
@@ -111,5 +116,16 @@ class Flight(models.Model):
             return np.min(l)
         else:
             return None
-class Search(models.Model):
-    pass
+    def num_layovers(self):
+        return len(self.layover_set.all())
+class Layover(models.Model):
+    airport = models.ForeignKey(Airport,on_delete=models.CASCADE,verbose_name='Airport')
+    flight = models.ForeignKey(Flight,on_delete=models.CASCADE,verbose_name='Flight')
+    change_planes = models.BooleanField(verbose_name='Change Planes?')
+    time = models.FloatField(validators=[MinValueValidator(0)],verbose_name='Time of layover in minutes')
+
+    def __str__(self):
+        return '{} - {}'.format(self.airport.abrev,self.get_timedelta())
+
+    def get_timedelta(self):
+        return timezone.timedelta(minutes=self.time)
