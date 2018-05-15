@@ -1,11 +1,9 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from .models import Airport,Flight
+from .models import Airport,Flight,Layover
 import pandas as pd
 from django.utils import timezone
-import pytz
-
-
+# import pytz
 # Create your tests here.
 
 def create_atl(title='Atlanta',abrev='ATL',sw_airport=True,latitude=33.6407,
@@ -86,14 +84,23 @@ class AirportModelTests(TestCase):
     # TODO: Get this to work...thought it should make a tz obj...not just a string
     # need to get string to obj working.
     def test_timezone_codes(self):
-        airport = create_atl(timezone=pytz.timezone('US/Eastern'))
+        airport = create_atl(timezone=timezone.pytz.timezone('US/Eastern'))
         # print(repr(airport.timezone))
-        self.assertIs(airport.timezone,pytz.timezone('US/Eastern'))
+        self.assertIs(airport.timezone,timezone.pytz.timezone('US/Eastern'))
 
     def test_timezone_bad_input(self):
         airport = get_atl(timezone='US/BlahBlah')
         with self.assertRaises(ValidationError):
             airport.full_clean()
+
+def get_flight():
+    a = create_atl()
+    b = create_atl(title='Boise',abrev='BOI',sw_airport=True,latitude=43.5658,
+        longitude=-116.2223,timezone = 'US/Mountain')
+    return Flight(origin_airport=a,destination_airport=b,
+        depart_time=pd.to_datetime('2018-04-26 6:00 AM').localize(a.get_tz_obj()),
+        arrive_time=pd.to_datetime('2018-04-26 1:50 PM').localize(a.get_tz_obj()),
+        wanna_get_away=438.0,anytime=571.0,business_select=599.0)
 
 class FlightModelTests(TestCase):
     def test_time_delta(self):
@@ -130,19 +137,37 @@ class FlightModelTests(TestCase):
         Test the tz_aware of everything...so here we will build a real Flight
         Then test the timezone of everything.
         '''
-        a = create_atl()
-        b = create_atl(title='Boise',abrev='BOI',sw_airport=True,latitude=43.5658,
-            longitude=-116.2223,timezone = 'US/Mountain')
-
-        f = Flight(origin_airport=a,destination_airport=b,
-            depart_time=pd.to_datetime('2018-04-26 6:00 AM'),
-            arrive_time=pd.to_datetime('2018-04-26 1:50 PM'),
-            wanna_get_away=438.0,anytime=571.0,business_select=599.0)
+        f = get_flight()
 
         f.save()
 
         self.assertIs(f.depart_time.is_aware(),True)
         self.assertIs(f.arrive_time.is_aware(),True)
+
+    def test_timedelta_timezone(self):
+        f = get_flight()
+        self.assertEqual(f.travel_time(),timezone.timedelta(hours=9,minutes=50))
+    def test_timedelta_timezone_save(self):
+        f = get_flight()
+        f.save()
+        self.assertEqual(f.travel_time(),timezone.timedelta(hours=9,minutes=50))
+
+class LayoverModelTests(TestCase):
+    def test_str(self):
+        a = create_atl()
+        l = Layover(airport=a,time=20)
+
+        self.assertEqual(l.__str__(),'{} - {}'.format(a.__str__(),l.get_timedelta()))
+
+    def test_min_time(self):
+        f = get_flight()
+        a = f.origin_airport
+
+        layover = Layover(airport=a,flight=f,change_planes=True,time=-10)
+        with self.assertRaises(ValidationError):
+            layover.full_clean()
+
+
 
     # def test_tz_specifics(self):
     #     '''
