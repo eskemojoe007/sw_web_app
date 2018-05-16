@@ -31,9 +31,9 @@ jobs:
       - run:
           name: run tests
           command: |
-            cd sw_site
             mkdir test-reports
-            pipenv run "python -m pytest --junitxml=test-reports/junit.xml"
+            cd sw_site
+            pipenv run "python -m pytest --junitxml=../test-reports/junit.xml"
       - store_test_results:
           path: test-results
       - store_artifacts:
