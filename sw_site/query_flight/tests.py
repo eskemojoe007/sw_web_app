@@ -1,10 +1,8 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from .models import Airport,Flight,Layover
-import pandas as pd
 from django.utils import timezone
-# import pytz
-# Create your tests here.
+
 
 def create_atl(title='Atlanta',abrev='ATL',sw_airport=True,latitude=33.6407,
     longitude=-84.4277,timezone = 'US/Eastern'):
@@ -98,14 +96,15 @@ def get_flight():
     b = create_atl(title='Boise',abrev='BOI',sw_airport=True,latitude=43.5658,
         longitude=-116.2223,timezone = 'US/Mountain')
     return Flight(origin_airport=a,destination_airport=b,
-        depart_time=pd.to_datetime('2018-04-26 6:00 AM').localize(a.get_tz_obj()),
-        arrive_time=pd.to_datetime('2018-04-26 1:50 PM').localize(a.get_tz_obj()),
+        depart_time=a.get_tz_obj().localize(timezone.datetime(2018,4,26,6,00,00)),
+        arrive_time=b.get_tz_obj().localize(timezone.datetime(2018,4,26,13,50,00)),
         wanna_get_away=438.0,anytime=571.0,business_select=599.0)
 
 class FlightModelTests(TestCase):
     def test_time_delta(self):
-        f = Flight(depart_time=pd.to_datetime('4/22/18 5:00 PM'),arrive_time=pd.to_datetime('4/22/18 10:00 PM'))
-        self.assertEqual(f.travel_time(),pd.to_timedelta('5:00:00'))
+        # f = Flight(depart_time=pd.to_datetime('4/22/18 5:00 PM'),arrive_time=pd.to_datetime('4/22/18 10:00 PM'))
+        f = Flight(depart_time=timezone.datetime(2018,4,22,17,00,00),arrive_time=timezone.datetime(2018,4,22,22,00,00))
+        self.assertEqual(f.travel_time(),timezone.timedelta(hours=5))
 
     def test_min_price_0(self):
         f = Flight(wanna_get_away=100.00)
@@ -141,8 +140,9 @@ class FlightModelTests(TestCase):
 
         f.save()
 
-        self.assertIs(f.depart_time.is_aware(),True)
-        self.assertIs(f.arrive_time.is_aware(),True)
+        self.assertTrue(timezone.is_aware(f.depart_time))
+        self.assertTrue(timezone.is_aware(f.arrive_time))
+        # self.assertIs(f.arrive_time.is_aware(),True)
 
     def test_timedelta_timezone(self):
         f = get_flight()
@@ -157,7 +157,7 @@ class LayoverModelTests(TestCase):
         a = create_atl()
         l = Layover(airport=a,time=20)
 
-        self.assertEqual(l.__str__(),'{} - {}'.format(a.__str__(),l.get_timedelta()))
+        self.assertEqual(l.__str__(),'{} - {}'.format(a.abrev,l.get_timedelta()))
 
     def test_min_time(self):
         f = get_flight()
