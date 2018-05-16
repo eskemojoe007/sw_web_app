@@ -167,6 +167,9 @@ class LayoverModelTests(TestCase):
         with self.assertRaises(ValidationError):
             layover.full_clean()
 
+    def test_fail(self):
+        self.assertTrue(False)
+
 
 
     # def test_tz_specifics(self):
