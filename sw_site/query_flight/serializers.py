@@ -19,9 +19,16 @@ class AirportSerializer(serializers.ModelSerializer):
         model = Airport
         fields = ('__all__')
 
+class LayoverSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Layover
+        fields = ('airport','change_planes','get_timedelta','time')
+        extra_kwargs = {'time':{'write_only':True}}
+
 class FlightSerializer(serializers.ModelSerializer):
-    origin_airport = AirportSerializer(read_only=True)
-    destination_airport = AirportSerializer(read_only=True)
+    origin_airport = AirportSerializer(read_only=True,required=False)
+    destination_airport = AirportSerializer(read_only=True,required=False)
+    layover_set = LayoverSerializer(read_only=True,many=True,required=False)
     class Meta:
         model = Flight
         fields = (
@@ -35,5 +42,6 @@ class FlightSerializer(serializers.ModelSerializer):
             'business_select',
             'travel_time',
             'min_price',
+            'layover_set',
         )
         read_only_fields = ('id','travel_time','min_price',)

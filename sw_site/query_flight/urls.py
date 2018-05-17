@@ -12,6 +12,7 @@ router.register('flights',apiviews.FlightViewSet,base_name='flights')
 
 
 urlpatterns = [
+    path('flights/<int:pk>/layovers/',apiviews.LayoverList.as_view(),name='layovers-list'),
     # path('', views.index, name='index'),
     # re_path(r'^(?i)airport/(?P<pk>[\w-]{3})/$',views.AirportView.as_view(),name='Airport'),
     # path('airport/<str:pk>/',views.AirportView.as_view(),name='Airport_Specific'),
