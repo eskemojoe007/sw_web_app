@@ -18,3 +18,22 @@ class AirportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Airport
         fields = ('__all__')
+
+class FlightSerializer(serializers.ModelSerializer):
+    origin_airport = AirportSerializer(read_only=True)
+    destination_airport = AirportSerializer(read_only=True)
+    class Meta:
+        model = Flight
+        fields = (
+            'id',
+            'origin_airport',
+            'destination_airport',
+            'depart_time',
+            'arrive_time',
+            'wanna_get_away',
+            'anytime',
+            'business_select',
+            'travel_time',
+            'min_price',
+        )
+        read_only_fields = ('id','travel_time','min_price',)

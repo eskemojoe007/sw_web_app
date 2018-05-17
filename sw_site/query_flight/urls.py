@@ -8,6 +8,7 @@ app_name='query_flight'
 #Set up routers
 router = DefaultRouter()
 router.register('airports',apiviews.AirportViewSet,base_name='airports')
+router.register('flights',apiviews.FlightViewSet,base_name='flights')
 
 
 urlpatterns = [
