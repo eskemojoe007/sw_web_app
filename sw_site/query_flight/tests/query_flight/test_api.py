@@ -3,6 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from query_flight.models import Airport, Flight, Layover
+import pytz
 
 class TestAirport(APITestCase):
     def setUp(self):
@@ -35,6 +36,8 @@ class TestAirport(APITestCase):
         self.check_create(response)
         self.assertEqual(Airport.objects.count(),1)
         self.assertEqual(Airport.objects.get().title,'Atlanta')
+        self.assertEqual(Airport.objects.get().timezone.zone,'US/Eastern')
+        self.assertEqual(Airport.objects.get().timezone,pytz.timezone('US/Eastern'))
 
         # response = self.client.get(self.url)
     # def test_get_single_airport(self):
