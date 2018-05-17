@@ -16,6 +16,7 @@ djangorestframework = "*"
 [dev-packages]
 setuptools = "*"
 pytest-django = "*"
+ipython = "*"
 
 [requires]
 python_version = "3.6"
