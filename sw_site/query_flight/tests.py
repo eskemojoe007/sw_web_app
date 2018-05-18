@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 from .models import Airport,Flight,Layover
 from django.utils import timezone
+import pytest
 
 
 def create_atl(title='Atlanta',abrev='ATL',sw_airport=True,latitude=33.6407,
@@ -10,86 +11,68 @@ def create_atl(title='Atlanta',abrev='ATL',sw_airport=True,latitude=33.6407,
         latitude=latitude,longitude=longitude,timezone=timezone)
 
 def get_atl(title='Atlanta',abrev='ATL',sw_airport=True,latitude=33.6407,
-    longitude=-84.4277,timezone = 'US/Eastern'):
+    longitude=-84.4277,timezone = 'US/Eastern',country=None,state=None):
     return Airport(title=title,abrev=abrev,sw_airport=sw_airport,
-        latitude=latitude,longitude=longitude,timezone=timezone)
+        latitude=latitude,longitude=longitude,timezone=timezone,country=country,state=state)
 
-class AirportModelTests(TestCase):
-    def test_atl_lookup(self):
-        # does it look up country and state for a common airport atl?
-        atl = Airport(latitude=33.6407,longitude=-84.4277)
-        self.assertEqual(atl.get_country_code(),'us')
-        self.assertEqual(atl.get_state(),'Georgia')
+@pytest.fixture(scope='function',params=[str,timezone.pytz.timezone])
+def tz_func(request):
+    return request.param
 
-    def test_foreign_lookup(self):
-        #Testing calgary airport lookup
-        yyc = Airport(latitude=51.1215,longitude=-114.0076)
-        self.assertEqual(yyc.get_country_code(),'ca')
-        self.assertEqual(yyc.get_state(),'Alberta')
+@pytest.mark.django_db
+class Test_Airport_Model(object):
 
-        #Checking San Jose Costa Rica airport
-        sjo = Airport(latitude=9.9981,longitude=-84.2041)
-        self.assertEqual(sjo.get_country_code(),'cr')
-        self.assertEqual(sjo.get_state(),'Provincia Alajuela')
+    @pytest.mark.parametrize("lat,long,country,state",[
+        (33.6407,-84.4277,'us','Georgia'),
+        (51.1215,-114.0076,'ca','Alberta'),
+        (9.9981,-84.2041,'cr','Provincia Alajuela'),
+        (12.501400,-70.015198,'nl',''),
+    ])
+    def test_geo_lookup(self,lat,long,country,state):
 
-        #Checking Aruba airport
-        aua = Airport(latitude=12.501400,longitude=-70.015198)
-        self.assertEqual(aua.get_country_code(),'nl')
+        # Test the get functions
+        airport = Airport(latitude=lat,longitude=long)
+        assert airport.get_country_code() == country
+        if state:
+            assert airport.get_state() == state
 
-    def test_lookup_save(self):
-        # Actually saves a value, and sees if the save function is working properly
-        atl = create_atl()
+        # Save and test the get and save
+        airport = create_atl(latitude=lat,longitude=long)
+        assert airport.country == country
+        if country == 'us':
+            assert airport.state == state
+        else:
+            assert airport.state == ''
 
-        self.assertEqual(atl.state,'Georgia')
-        self.assertEqual(atl.country,'us')
+    @pytest.mark.parametrize("kwargs,func",[
+        ({'latitude':92.6407},'full_clean'),
+        ({'latitude':92.6407},'save'),
+        ({'latitude':92.6407,'country':'us','state':'GA'},'full_clean'),
+        # ({'latitude':92.6407,'country':'us','state':'GA'},'save'),
+        ({'latitude':-92.6407},'full_clean'),
+        ({'longitude':-184.4277},'save'),
+        ({'longitude':184.4277},'save'),
+        ({'latitude':89.99},'full_clean'),
+        ({'latitude':89.99},'save'),
+        ({'timezone':'US/BlahBlah'},'full_clean'),
+        ({'timezone':'US/BlahBlah'},'save'),
 
-    def test_lookup_save_international(self):
-        # Actually saves a value, and sees if the save function is working properly
-        aua = Airport.objects.create(title='Aruba',abrev='AUA',sw_airport=True,
-            latitude=12.501400,longitude=-70.015198)
-
-        self.assertEqual(aua.country,'nl')
-        self.assertEqual(aua.state,'')
-
-    def test_lat_validator(self):
-        airport = get_atl(latitude=92.6407)
-
-        #Only testing the validators...not the save
-        with self.assertRaises(ValidationError):
-            airport.full_clean()
-
-    def test_long_validator(self):
-        airport = get_atl(longitude=-184.4277)
-
-        #Only testing the validators...not the save
-        with self.assertRaises(ValidationError):
-            airport.full_clean()
-
-    def test_geolocator_error(self):
-        airport = get_atl(latitude=89.99)
+    ])
+    def test_validators(self,kwargs,func):
+        airport = get_atl(**kwargs)
 
         #Only testing the validators...not the save
-        with self.assertRaises(ValidationError):
-            airport.full_clean()
+        with pytest.raises(ValidationError)  as excinfo:
+            f = getattr(airport,func)
+            f()
 
-    def test_geolocator_error_save(self):
-        airport = get_atl(latitude=89.99)
 
-        #Only testing the validators...not the save
-        with self.assertRaises(ValidationError):
-            airport.save()
+    @pytest.mark.parametrize("tz",['US/Eastern','US/Mountain'])
+    def test_timezone_codes(self,tz,tz_func):
+        airport = create_atl(timezone=tz_func(tz))
+        assert airport.get_tz_obj().zone == tz
+        assert airport.get_tz_obj() == timezone.pytz.timezone(tz)
 
-    # TODO: Get this to work...thought it should make a tz obj...not just a string
-    # need to get string to obj working.
-    def test_timezone_codes(self):
-        airport = create_atl(timezone=timezone.pytz.timezone('US/Eastern'))
-        # print(repr(airport.timezone))
-        self.assertIs(airport.timezone,timezone.pytz.timezone('US/Eastern'))
-
-    def test_timezone_bad_input(self):
-        airport = get_atl(timezone='US/BlahBlah')
-        with self.assertRaises(ValidationError):
-            airport.full_clean()
 
 def get_flight():
     a = create_atl()
@@ -99,6 +82,8 @@ def get_flight():
         depart_time=a.get_tz_obj().localize(timezone.datetime(2018,4,26,6,00,00)),
         arrive_time=b.get_tz_obj().localize(timezone.datetime(2018,4,26,13,50,00)),
         wanna_get_away=438.0,anytime=571.0,business_select=599.0)
+
+
 
 class FlightModelTests(TestCase):
     def test_time_delta(self):
@@ -137,7 +122,6 @@ class FlightModelTests(TestCase):
         Then test the timezone of everything.
         '''
         f = get_flight()
-
         f.save()
 
         self.assertTrue(timezone.is_aware(f.depart_time))
