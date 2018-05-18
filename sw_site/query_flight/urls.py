@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-# from . import views
+from . import views
 from . import apiviews
 from rest_framework.routers import DefaultRouter
 
@@ -18,7 +18,7 @@ urlpatterns = [
     # path('airport/<str:pk>/',views.AirportView.as_view(),name='Airport_Specific'),
     # path('airport/',views.AirportIndexView.as_view(),name='Airport'),
     # path('flight/new/',views.flight_new,name='New_Flight'),
-    # path('search/new/',views.search,name='search'),
+    path('search/new/',views.search,name='search'),
 ]
 
 urlpatterns += router.urls
