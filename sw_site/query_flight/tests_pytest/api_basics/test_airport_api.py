@@ -29,7 +29,6 @@ def check_post_code(status_code):
 def test_airport_list(apiclient,airport_list):
     response = apiclient.get(airport_list)
     assert check_get_code(response.status_code)
-    assert False
 
 @pytest.mark.django_db
 def test_create_airport(apiclient,airport_list):
@@ -48,10 +47,8 @@ def test_create_airport(apiclient,airport_list):
     assert airport.title == 'Atlanta'
     assert airport.get_tz_obj().zone == 'US/Eastern'
     assert airport.get_tz_obj() == pytz.timezone('US/Eastern')
-    assert False
 
 @pytest.mark.django_db
-# @pytest.mark.parametrize("airport",[atl,boi])
 def test_get_airports(apiclient,airport_list,airport):
     assert Airport.objects.count() == 1
 
@@ -61,7 +58,6 @@ def test_get_airports(apiclient,airport_list,airport):
     assert response.data[0].get('title') == airport.title
     assert response.data[0].get('abrev') == airport.abrev
     assert response.data[0].get('timezone') == airport.get_tz_obj().zone
-    assert False
 
 
 @pytest.mark.django_db
@@ -73,4 +69,3 @@ def test_get_airport(apiclient,airport):
     assert response.data.get('title') == airport.title
     assert response.data.get('abrev') == airport.abrev
     assert response.data.get('timezone') == airport.get_tz_obj().zone
-    assert False

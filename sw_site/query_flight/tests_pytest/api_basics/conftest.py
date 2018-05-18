@@ -13,14 +13,12 @@ def apiclient():
 #         sw_airport=True,latitude=33.6407,
 #         longitude=-84.4277,timezone = request.param)
 
-
-
 def pytest_generate_tests(metafunc):
     if 'airport' in metafunc.fixturenames:
         metafunc.parametrize("airport", ['ATL', 'BOI'], indirect=True)
 
 @pytest.fixture
-def airport(request,tz):
+def airport(request):
     if request.param == 'ATL':
         return Airport.objects.create(title='Atlanta',abrev='ATL',
             sw_airport=True,latitude=33.6407,
@@ -28,7 +26,7 @@ def airport(request,tz):
     elif request.param == 'BOI':
         return Airport.objects.create(title='Boise',abrev='BOI',
             sw_airport=True,latitude=43.5658,
-            longitude=-116.2223,timezone = 'US/Mountain')
+            longitude=-116.2223,timezone = pytz.timezone('US/Mountain'))
     else:
         raise ValueError("invalid internal test config")
 
