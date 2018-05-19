@@ -99,8 +99,8 @@ class Flight(models.Model):
     # TODO: Need to add point support...but for now just dollars.
     origin_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,related_name='origin_set',verbose_name='Origin Airport')
     destination_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,related_name='destination_set',verbose_name='Destination Airport')
-    depart_time = models.DateTimeField(verbose_name='Departure Time (UTC)')
-    arrive_time = models.DateTimeField(verbose_name='Arrival Time (UTC)')
+    depart_time = models.DateTimeField(verbose_name='Departure Time')
+    arrive_time = models.DateTimeField(verbose_name='Arrival Time')
     wanna_get_away = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
     anytime = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
     business_select = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
@@ -121,6 +121,18 @@ class Flight(models.Model):
             return None
     def num_layovers(self):
         return len(self.layover_set.all())
+
+    def clean(self):
+        super().clean()
+        if self.origin_airport == self.destination_airport:
+            raise ValidationError(_(
+                'Origin and Destination cant be the same: {a}'),
+                params={'a':self.origin_airport},code='same_airports')
+        if self.arrive_time < self.depart_time:
+            raise ValidationError(_(
+                'Must depart before arriving. Depart: {d}, Arrive: {a} '),
+                params={'a':self.arrive_time,'d':self.depart_time},code='badtimes')
+
 class Layover(models.Model):
     airport = models.ForeignKey(Airport,on_delete=models.CASCADE,verbose_name='Airport')
     flight = models.ForeignKey(Flight,on_delete=models.CASCADE,verbose_name='Flight')
