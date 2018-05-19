@@ -16,7 +16,6 @@ def test_airport_list(apiclient,airport_list):
     check_get(response)
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("post_airports")
 def test_create_airport(apiclient,airport_list,atl):
     params = {
         'title':'Atlanta',

@@ -88,11 +88,11 @@ class Airport(models.Model):
         self.add_loc_fields()
 
 
-# class Search(models.Model):
-#     time = models.DateTimeField(auto_now=True)
-#
-#     def __str__(self):
-#         return '{}'.format(self.time)
+class Search(models.Model):
+    time = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return '{} - {}'.format(self.id,self.time)
 
 class Flight(models.Model):
 
@@ -104,7 +104,7 @@ class Flight(models.Model):
     wanna_get_away = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
     anytime = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
     business_select = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
-    # search = models.ForeignKey(Search,on_delete=models.CASCADE,verbose_name='Search')
+    search = models.ForeignKey(Search,on_delete=models.CASCADE,verbose_name='Search')
 
     def __str__(self):
         # Return the title and abrev as the default string
