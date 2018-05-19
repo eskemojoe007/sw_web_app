@@ -94,6 +94,10 @@ class Search(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.id,self.time)
 
+    def num_flights(self):
+        # TODO: This could be a terrible slow method
+        return len(self.flight_set.all())
+
 class Flight(models.Model):
 
     # TODO: Need to add point support...but for now just dollars.
@@ -120,6 +124,7 @@ class Flight(models.Model):
         else:
             return None
     def num_layovers(self):
+        # TODO: This could be a terrible slow method
         return len(self.layover_set.all())
 
     def clean(self):
@@ -137,10 +142,24 @@ class Layover(models.Model):
     airport = models.ForeignKey(Airport,on_delete=models.CASCADE,verbose_name='Airport')
     flight = models.ForeignKey(Flight,on_delete=models.CASCADE,verbose_name='Flight')
     change_planes = models.BooleanField(verbose_name='Change Planes?')
-    time = models.FloatField(validators=[MinValueValidator(0)],verbose_name='Time of layover in minutes')
+    time = models.FloatField(validators=[MinValueValidator(0)],verbose_name='Time of layover in seconds')
 
     def __str__(self):
         return '{} - {}'.format(self.airport.abrev,self.get_timedelta())
 
-    def get_timedelta(self):
-        return timezone.timedelta(minutes=self.time)
+    def timedelta(self):
+        return timezone.timedelta(seconds=self.time)
+
+    def clean(self):
+        super().clean()
+
+        if (self.airport == self.flight.origin_airport) or(
+            self.airport == self.flight.destination_airport):
+
+            raise ValidationError(_(
+                'Layover ({layover}) cant happen at origin ({orign}) '
+                'or destination ({destination}) '),
+                params={'layover':self.airport,
+                    'origin':self.flight.origin_airport,
+                    'destination':self.flight.destination_airport},
+                code='bad_layover')

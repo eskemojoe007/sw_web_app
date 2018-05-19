@@ -9,25 +9,6 @@ def get_airport(**kwargs):
 def create_airport(**kwargs):
     return Airport.objects.create(**kwargs)
 
-# def overwrite_dict(d,**kwargs):
-#     for key, value in kwargs.items():
-#         d.update({key,value})
-
-
-# def create_atl(title='Atlanta',abrev='ATL',sw_airport=True,latitude=33.6407,
-#     longitude=-84.4277,timezone = 'US/Eastern'):
-#     return Airport.objects.create(title=title,abrev=abrev,sw_airport=sw_airport,
-#         latitude=latitude,longitude=longitude,timezone=timezone)
-#
-# def get_atl(title='Atlanta',abrev='ATL',sw_airport=True,latitude=33.6407,
-#     longitude=-84.4277,timezone = 'US/Eastern',country=None,state=None):
-#     return Airport(title=title,abrev=abrev,sw_airport=sw_airport,
-#         latitude=latitude,longitude=longitude,timezone=timezone,country=country,state=state)
-
-# @pytest.fixture(scope='function',params=[str,timezone.pytz.timezone])
-# def tz_func(request):
-#     return request.param
-
 @pytest.mark.django_db
 class Test_Airport_Model(object):
 
@@ -37,7 +18,7 @@ class Test_Airport_Model(object):
         (9.9981,-84.2041,'cr','Provincia Alajuela'),
         (12.501400,-70.015198,'nl',''),
     ])
-    def test_geo_lookup(self,lat,long,country,state,atl):
+    def test_geo_lookup(self,lat,long,country,state,atl_dict):
 
         # Test the get functions
         airport = Airport(latitude=lat,longitude=long)
@@ -46,9 +27,8 @@ class Test_Airport_Model(object):
             assert airport.get_state() == state
 
         # Save and test the get and save
-        # airport_dict = overwrite_dict(atl,latitude=lat,longitude=long)
-        atl.update({'latitude':lat,'longitude':long})
-        airport = create_airport(**atl)
+        atl_dict.update({'latitude':lat,'longitude':long})
+        airport = create_airport(**atl_dict)
         assert airport.country == country
         if country == 'us':
             assert airport.state == state
@@ -68,24 +48,20 @@ class Test_Airport_Model(object):
         ({'timezone':'US/BlahBlah'},'full_clean'),
         ({'timezone':'US/BlahBlah'},'save'),
     ])
-    def test_validators(self,kwargs,func,atl):
+    def test_validators(self,kwargs,func,atl_dict):
 
-        #Change the info in the atl_dict and get the airport object
-        atl.update(kwargs)
-        airport = get_airport(**atl)
+        #Change the info in the atl_dict_dict and get the airport object
+        atl_dict.update(kwargs)
+        airport = get_airport(**atl_dict)
 
         #Only testing the validators...not the save
         with pytest.raises(ValidationError)  as excinfo:
             f = getattr(airport,func)
             f()
 
-        # #Now test the create method
-        # with pytest.raises(ValidationError)  as excinfo:
-        #     create_airport(**atl)
-
     @pytest.mark.parametrize("tz",['US/Eastern','US/Mountain'])
-    def test_timezone_codes(self,tz,tz_func,atl):
-        atl.update({'timezone':tz_func(tz)})
-        airport = create_airport(**atl)
+    def test_timezone_codes(self,tz,tz_func,atl_dict):
+        atl_dict.update({'timezone':tz_func(tz)})
+        airport = create_airport(**atl_dict)
         assert airport.get_tz_obj().zone == tz
         assert airport.get_tz_obj() == timezone.pytz.timezone(tz)
