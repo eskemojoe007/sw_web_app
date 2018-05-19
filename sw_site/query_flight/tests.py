@@ -4,7 +4,7 @@ from .models import Airport,Flight,Layover
 from django.utils import timezone
 import pytest
 
-
+# Helper functions that get and create airports
 def create_atl(title='Atlanta',abrev='ATL',sw_airport=True,latitude=33.6407,
     longitude=-84.4277,timezone = 'US/Eastern'):
     return Airport.objects.create(title=title,abrev=abrev,sw_airport=sw_airport,
