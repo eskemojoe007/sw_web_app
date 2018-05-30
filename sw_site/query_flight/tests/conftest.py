@@ -23,16 +23,31 @@ def dal_dict():
         'latitude':32.8481,'longitude':-96.8512,'timezone':'US/Central'}
 
 @pytest.fixture
-def atl_airport(atl_dict):
-    return Airport.objects.create(**atl_dict)
+def atl_dict_total(atl_dict):
+    atl_dict.update({'country':'us','state':'Georgia'})
+    return atl_dict
 
 @pytest.fixture
-def boi_airport(boi_dict):
-    return Airport.objects.create(**boi_dict)
+def boi_dict_total(boi_dict):
+    boi_dict.update({'country':'us','state':'Idaho'})
+    return boi_dict
 
 @pytest.fixture
-def dal_airport(dal_dict):
-    return Airport.objects.create(**dal_dict)
+def dal_dict_total(dal_dict):
+    dal_dict.update({'country':'us','state':'Texas'})
+    return dal_dict
+
+@pytest.fixture
+def atl_airport(atl_dict_total):
+    return Airport.objects.create(**atl_dict_total)
+
+@pytest.fixture
+def boi_airport(boi_dict_total):
+    return Airport.objects.create(**boi_dict_total)
+
+@pytest.fixture
+def dal_airport(dal_dict_total):
+    return Airport.objects.create(**dal_dict_total)
 
 @pytest.fixture
 def search():
@@ -54,7 +69,7 @@ def basic_flight(basic_flight_dict):
 #     if 'airports' in metafunc.fixturenames:
 #         metafunc.parametrize("airports", ['atl','boi'], indirect=True)
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def airports(request,atl_airport,boi_airport,dal_airport):
     if request.param.lower() == 'atl':
         return atl_airport
@@ -64,3 +79,25 @@ def airports(request,atl_airport,boi_airport,dal_airport):
         return dal_airport
     else:
         raise ValueError('Invalid param in airports')
+
+@pytest.fixture(scope='function')
+def airports_dict(request,atl_dict_total,boi_dict_total,dal_dict_total):
+    if request.param.lower() == 'atl':
+        return atl_dict_total
+    elif request.param.lower() == 'boi':
+        return boi_dict_total
+    elif request.param.lower() == 'dal':
+        return dal_dict_total
+    else:
+        raise ValueError('Invalid param in airports_dict')
+
+# @pytest.fixture(scope='function')
+# def airports(request,atl_dict_total,boi_dict_total,dal_dict_total):
+#     if request.param.lower() == 'atl':
+#         return Airport.objects.get_or_create(**atl_dict_total)
+#     elif request.param.lower() == 'boi':
+#         return Airport.objects.get_or_create(**boi_dict_total)
+#     elif request.param.lower() == 'dal':
+#         return Airport.objects.get_or_create(**dal_dict_total)
+#     else:
+#         raise ValueError('Invalid param in airports')

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Airport, Flight, Layover
+from django.core.exceptions import ValidationError
 import pytz
 import six
 
