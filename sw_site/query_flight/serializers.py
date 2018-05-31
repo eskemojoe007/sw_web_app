@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Airport, Flight, Layover
+from .models import Airport, Flight, Layover, Search
 # from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 import pytz
@@ -36,15 +36,15 @@ class AirportSerializer(serializers.ModelSerializer):
         # raise serializers.ValidationError(_('Need to specify country on serializer'),code='no country')
         return attrs
 
-
-
 class LayoverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Layover
         fields = ('airport','change_planes','timedelta','time')
         extra_kwargs = {'time':{'write_only':True}}
 
-class FlightSerializer(serializers.ModelSerializer):
+
+
+class FlightGetSerializer(serializers.ModelSerializer):
     origin_airport = AirportSerializer(read_only=True,required=False)
     destination_airport = AirportSerializer(read_only=True,required=False)
     layover_set = LayoverSerializer(read_only=True,many=True,required=False)
@@ -64,3 +64,40 @@ class FlightSerializer(serializers.ModelSerializer):
             'layover_set',
         )
         read_only_fields = ('id','travel_time','min_price',)
+
+class SearchSerializer(serializers.ModelSerializer):
+    flight_set = FlightGetSerializer(read_only=True,many=True,required=False)
+    class Meta:
+        model = Search
+        fields = ('id','time','num_flights','flight_set')
+        # read_only_fields = ('time','num_flights')
+
+# class AirportPKSerializer(serializers.PrimaryKeyRelatedField):
+#     def get_queryset(self):
+#         return Airport.objects.all()
+
+class FlightPostSerializer(serializers.ModelSerializer):
+    # origin_airport = AirportPKSerializer(read_only=False,required=True)
+    # destination_airport = AirportSerializer(read_only=False,required=True)
+    origin_airport = serializers.PrimaryKeyRelatedField(read_only=False,queryset=Airport.objects.all())
+    destination_airport = serializers.PrimaryKeyRelatedField(read_only=False,queryset=Airport.objects.all())
+    search = serializers.PrimaryKeyRelatedField(read_only=False,queryset=Search.objects.all())
+    # destination_airport = serializers.PrimaryKeyRelatedField(read_only=False)
+    # search = serializers.PrimaryKeyRelatedField(read_only=False)
+    class Meta:
+        model = Flight
+        fields = (
+            'origin_airport',
+            'destination_airport',
+            'depart_time',
+            'arrive_time',
+            'wanna_get_away',
+            'anytime',
+            'business_select',
+            'search',
+        )
+
+    ## TODO: Create the search if it doesn't exist yet...we may want to do that
+    # since its so simple.
+    # def create(self,validated_data):
+    #     pass
