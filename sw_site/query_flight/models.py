@@ -9,6 +9,19 @@ from django.utils import timezone
 import pytz
 from six import string_types
 
+class AirportManager(models.Manager):
+    def create(self,**kwargs):
+        airport = Airport(**kwargs)
+        airport.add_loc_fields()
+        airport.save()
+        return airport
+
+    def lookup_missing(self,**kwargs):
+        airport = Airport(**kwargs)
+        airport.add_loc_fields()
+        return airport
+
+
 class Airport(models.Model):
 
     title = models.CharField(verbose_name='Long Name of Airport',max_length=50)
@@ -20,6 +33,8 @@ class Airport(models.Model):
 
     country = models.CharField(max_length=20,blank=True)
     state = models.CharField(max_length=20,blank=True)
+
+    objects = AirportManager()
 
     sw_airport.admin_order_field = 'title'
 
@@ -33,7 +48,7 @@ class Airport(models.Model):
     def _get_sub_loc(self,key):
         # Here we use geolocator to get the proper key
         geolocator = Nominatim()
-        location = geolocator.reverse("{:f}, {:f}".format(self.latitude,self.longitude))
+        location = geolocator.reverse("{:f}, {:f}".format(self.latitude,self.longitude),timeout=10)
 
         # Lots and lots of error checking...looking for error from Geolocator
         # and for missing fields for international or other addresses
@@ -55,7 +70,7 @@ class Airport(models.Model):
             else:
                 raise ValidationError(_('Got a response from Geolocator, had an address,KEY_ERROR of some kind %(raw)s'),params={'raw':location.raw},code='some_key')
         except:
-            raise ValidationError(_('NO CLUE WHAT WENT WRONG'),code='no_clue')
+            raise ValidationError(_('Geolocator - NO CLUE WHAT WENT WRONG'),code='no_clue')
 
 
     def get_tz_obj(self):
@@ -76,16 +91,16 @@ class Airport(models.Model):
         if ((self.state is None) or (self.state == '')) and self.country =='us':
             self.state = self.get_state()
 
-    def save(self, *args, **kwargs):
-        # Overright save so we can look up the coutnry and state if its missing
-        # as it is optional.  If its empty or none...go look it up
-        self.add_loc_fields()
-        super().save(*args,**kwargs)
+    # def save(self, *args, **kwargs):
+    #     # Overright save so we can look up the coutnry and state if its missing
+    #     # as it is optional.  If its empty or none...go look it up
+    #     self.add_loc_fields()
+    #     super().save(*args,**kwargs)
 
-    def clean(self):
-        # Overwrite clean so we can add the fields and validate properly if they are missing.
-        super().clean()
-        self.add_loc_fields()
+    # def clean(self):
+    #     # Overwrite clean so we can add the fields and validate properly if they are missing.
+    #     super().clean()
+    #     self.add_loc_fields()
 
 
 class Search(models.Model):
@@ -145,7 +160,7 @@ class Layover(models.Model):
     time = models.FloatField(validators=[MinValueValidator(0)],verbose_name='Time of layover in seconds')
 
     def __str__(self):
-        return '{} - {}'.format(self.airport.abrev,self.get_timedelta())
+        return '{} - {}'.format(self.airport.abrev,self.timedelta())
 
     def timedelta(self):
         return timezone.timedelta(seconds=self.time)

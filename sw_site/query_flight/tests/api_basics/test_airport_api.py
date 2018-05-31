@@ -2,6 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 from query_flight.models import Airport
+from query_flight.serializers import AirportSerializer
 import pytz
 # from .conftest import check_get, check_post
 
@@ -43,26 +44,70 @@ def test_get_airports(apiclient,airport_list,airports_dict):
     assert response.data.get('abrev') == airport.abrev
     assert response.data.get('timezone') == airport.get_tz_obj().zone
 
-@pytest.mark.parametrize("kwargs,func",[
-    ({'latitude':92.6407},'full_clean'),
-    ({'latitude':92.6407},'save'),
-    ({'latitude':92.6407,'country':'us','state':'GA'},'full_clean'),
-    # # ({'latitude':92.6407,'country':'us','state':'GA'},'save'),
-    ({'latitude':-92.6407},'full_clean'),
-    ({'longitude':-184.4277},'save'),
-    ({'longitude':184.4277},'save'),
-    ({'latitude':89.99},'full_clean'),
-    ({'latitude':89.99},'save'),
-    ({'timezone':'US/BlahBlah'},'full_clean'),
-    ({'timezone':'US/BlahBlah'},'save'),
+@pytest.mark.django_db
+@pytest.mark.parametrize("kwargs",[
+    ({'latitude':92.6407}),
+    ({'latitude':-92.6407}),
+    ({'longitude':-184.4277}),
+    ({'longitude':184.4277}),
+    ({'timezone':'US/BlahBlah'}),
 ])
-def test_validators(self,kwargs,func,atl_dict):
-
+def test_field_validators(apiclient,kwargs,airport_list,atl_dict):
     #Change the info in the atl_dict_dict and get the airport object
     atl_dict.update(kwargs)
-    airport = get_airport(**atl_dict)
+    response = apiclient.post(airport_list,atl_dict)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert list(kwargs)[0] in str(response.json())
 
-    #Only testing the validators...not the save
-    with pytest.raises(ValidationError)  as excinfo:
-        f = getattr(airport,func)
-        f()
+@pytest.mark.django_db
+@pytest.mark.parametrize('airports_dict_partial,country,state',
+    [
+        ('ATL','us','Georgia'),
+        ('BOI','us','Idaho'),
+        ('DAL','us','Texas'),
+        ('AUA','nl',None),
+    ],indirect=['airports_dict_partial'])
+def test_serializer_validate(airports_dict_partial,country,state):
+    serializer = AirportSerializer(data=airports_dict_partial)
+
+    assert serializer.is_valid()
+    assert serializer.validated_data['country'] == country
+    assert serializer.validated_data.get('state') == state
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize('airports_dict_partial,country',
+    [
+        ('ATL','us'),
+        ('BOI','us'),
+        ('DAL','us'),
+        ('AUA','nl'),
+    ],indirect=['airports_dict_partial'])
+def test_loc_validator(apiclient,airport_list,airports_dict_partial,country):
+    response = apiclient.post(airport_list,airports_dict_partial)
+    assert response.status_code == status.HTTP_201_CREATED
+    assert Airport.objects.count() == 1
+
+    # Make sure it saved and put it self into the test db
+    airport = Airport.objects.get()
+    assert airport.country == country
+
+    # print(airports_dict_partial)
+    # assert response.status_code == status.HTTP_400_BAD_REQUEST
+    # assert "country" in str(response.json())
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("kwargs",[
+    # ({'latitude':92.6407}),
+    # ({'latitude':-92.6407}),
+    # ({'longitude':-184.4277}),
+    # ({'longitude':184.4277}),
+    ({'latitude':89.99}),
+    ({'latitude':-89.99}),
+])
+def test_geo_validators(apiclient,kwargs,airport_list,atl_dict):
+    #Change the info in the atl_dict_dict and get the airport object
+    atl_dict.update(kwargs)
+    response = apiclient.post(airport_list,atl_dict)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert 'Geolocator' in str(response.json())

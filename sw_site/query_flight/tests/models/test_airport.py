@@ -35,29 +35,41 @@ class Test_Airport_Model(object):
         else:
             assert airport.state == ''
 
-    @pytest.mark.parametrize("kwargs,func",[
-        ({'latitude':92.6407},'full_clean'),
-        ({'latitude':92.6407},'save'),
-        ({'latitude':92.6407,'country':'us','state':'GA'},'full_clean'),
-        # # ({'latitude':92.6407,'country':'us','state':'GA'},'save'),
-        ({'latitude':-92.6407},'full_clean'),
-        ({'longitude':-184.4277},'save'),
-        ({'longitude':184.4277},'save'),
-        ({'latitude':89.99},'full_clean'),
-        ({'latitude':89.99},'save'),
-        ({'timezone':'US/BlahBlah'},'full_clean'),
-        ({'timezone':'US/BlahBlah'},'save'),
+    @pytest.mark.parametrize("kwargs",[
+        ({'latitude':92.6407}),
+        ({'latitude':-92.6407}),
+        ({'longitude':-184.4277}),
+        ({'longitude':184.4277}),
+        # ({'latitude':89.99}),
+        ({'timezone':'US/BlahBlah'}),
     ])
-    def test_validators(self,kwargs,func,atl_dict):
-
+    def test_field_validators(self,kwargs,atl_dict):
         #Change the info in the atl_dict_dict and get the airport object
         atl_dict.update(kwargs)
         airport = get_airport(**atl_dict)
 
         #Only testing the validators...not the save
         with pytest.raises(ValidationError)  as excinfo:
-            f = getattr(airport,func)
-            f()
+            airport.full_clean()
+        assert list(kwargs)[0] in str(excinfo.value)
+    @pytest.mark.parametrize("kwargs",[
+        ({'latitude':92.6407}),
+        ({'latitude':-92.6407}),
+        ({'longitude':-184.4277}),
+        ({'longitude':184.4277}),
+        ({'latitude':89.99}),
+        ({'latitude':-89.99}),
+    ])
+    def test_geo_error(self,kwargs,atl_dict):
+        #Change the info in the atl_dict_dict and get the airport object
+        atl_dict.update(kwargs)
+        airport = get_airport(**atl_dict)
+
+        #Only testing the validators...not the save
+        with pytest.raises(ValidationError)  as excinfo:
+            airport.add_loc_fields()
+        assert 'Geolocator' in str(excinfo.value)
+
 
     @pytest.mark.parametrize("tz",['US/Eastern','US/Mountain'])
     def test_timezone_codes(self,tz,tz_func,atl_dict):

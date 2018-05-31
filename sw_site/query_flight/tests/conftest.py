@@ -23,6 +23,11 @@ def dal_dict():
         'latitude':32.8481,'longitude':-96.8512,'timezone':'US/Central'}
 
 @pytest.fixture
+def aua_dict():
+    return {'title':'Aruba','abrev':'AUA','sw_airport':True,
+        'latitude':12.501400,'longitude':-70.015198,'timezone':'America/Aruba'}
+
+@pytest.fixture
 def atl_dict_total(atl_dict):
     atl_dict.update({'country':'us','state':'Georgia'})
     return atl_dict
@@ -38,6 +43,11 @@ def dal_dict_total(dal_dict):
     return dal_dict
 
 @pytest.fixture
+def aua_dict_total(aua_dict):
+    aua_dict.update({'country':'nl'})
+    return aua_dict
+
+@pytest.fixture
 def atl_airport(atl_dict_total):
     return Airport.objects.create(**atl_dict_total)
 
@@ -48,6 +58,10 @@ def boi_airport(boi_dict_total):
 @pytest.fixture
 def dal_airport(dal_dict_total):
     return Airport.objects.create(**dal_dict_total)
+
+@pytest.fixture
+def aua_airport(aua_dict_total):
+    return Airport.objects.create(**aua_dict_total)
 
 @pytest.fixture
 def search():
@@ -70,24 +84,41 @@ def basic_flight(basic_flight_dict):
 #         metafunc.parametrize("airports", ['atl','boi'], indirect=True)
 
 @pytest.fixture(scope='function')
-def airports(request,atl_airport,boi_airport,dal_airport):
+def airports(request,atl_airport,boi_airport,dal_airport,aua_airport):
     if request.param.lower() == 'atl':
         return atl_airport
     elif request.param.lower() == 'boi':
         return boi_airport
     elif request.param.lower() == 'dal':
         return dal_airport
+    elif request.param.lower() == 'aua':
+        return aua_airport
     else:
         raise ValueError('Invalid param in airports')
 
 @pytest.fixture(scope='function')
-def airports_dict(request,atl_dict_total,boi_dict_total,dal_dict_total):
+def airports_dict(request,atl_dict_total,boi_dict_total,dal_dict_total,aua_dict_total):
     if request.param.lower() == 'atl':
         return atl_dict_total
     elif request.param.lower() == 'boi':
         return boi_dict_total
     elif request.param.lower() == 'dal':
         return dal_dict_total
+    elif request.param.lower() == 'aua':
+        return aua_dict_total
+    else:
+        raise ValueError('Invalid param in airports_dict')
+
+@pytest.fixture(scope='function')
+def airports_dict_partial(request,atl_dict,boi_dict,dal_dict,aua_dict):
+    if request.param.lower() == 'atl':
+        return atl_dict
+    elif request.param.lower() == 'boi':
+        return boi_dict
+    elif request.param.lower() == 'dal':
+        return dal_dict
+    elif request.param.lower() == 'aua':
+        return aua_dict
     else:
         raise ValueError('Invalid param in airports_dict')
 

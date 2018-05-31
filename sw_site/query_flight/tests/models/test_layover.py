@@ -15,6 +15,7 @@ class Test_Layover_Model(object):
         ('ATL',True),
         ('DAL',False),
         ('BOI',True),
+        ('AUA',False),
         ],indirect=['airports'])
     def test_layover_location(self,airports,error_bool,basic_flight):
         l = Layover(airport=airports,flight=basic_flight,change_planes=True,time=60*60)

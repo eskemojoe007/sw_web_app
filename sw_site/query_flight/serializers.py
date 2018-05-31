@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Airport, Flight, Layover
-from django.core.exceptions import ValidationError
+# from django.core.exceptions import ValidationError
+from django.utils.translation import gettext as _
 import pytz
 import six
 
@@ -12,18 +13,35 @@ class TimezoneField(serializers.Field):
         try:
             return pytz.timezone(str(data))
         except pytz.exceptions.UnknownTimeZoneError:
-            raise ValidationError('Unknown timezone')
+            raise serializers.ValidationError(_('Unknown timezone'),code='unknown Timezone')
+
 
 class AirportSerializer(serializers.ModelSerializer):
+    # country = serializers.CharField(required=False)
     timezone = TimezoneField()
     class Meta:
         model = Airport
         fields = ('__all__')
+    def validate(self, attrs):
+        # By default we don't need country or state...here we make you need it
+        # This is similar to model code, but needs to be added here as to trigger
+        # 400 errors and some other basic validation
+
+        if not attrs.get('country'):
+            airport = Airport.objects.lookup_missing(**attrs)
+            attrs.update({'country':airport.country})
+
+            if airport.state:
+                attrs.update({'state':airport.state})
+        # raise serializers.ValidationError(_('Need to specify country on serializer'),code='no country')
+        return attrs
+
+
 
 class LayoverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Layover
-        fields = ('airport','change_planes','get_timedelta','time')
+        fields = ('airport','change_planes','timedelta','time')
         extra_kwargs = {'time':{'write_only':True}}
 
 class FlightSerializer(serializers.ModelSerializer):

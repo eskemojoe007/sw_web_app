@@ -15,7 +15,7 @@ def test_flight_list(apiclient,flight_list):
     assert response.status_code == status.HTTP_200_OK
 
 @pytest.mark.django_db
-def test_flight(apiclient,flight_list,flight):
+def test_flight(apiclient,flight_list):
     response = apiclient.get(flight_list)
     assert response.status_code == status.HTTP_200_OK
     assert False
