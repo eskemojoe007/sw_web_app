@@ -32,9 +32,7 @@ class LayoverList(generics.ListCreateAPIView):
     def perform_create(self,serializer):
         serializer.save(flight=Flight.objects.get(pk=self.kwargs['pk']))
 
-    # def post(self, request, *args, **kwargs):
-    #     flight = Flight.objects.get(pk=self.kwargs['pk'])
-    #     print(repr(request))
-    #     print(self.kwargs)
-    #     print(kwargs)
-    #     return super().post(request,*args,**kwargs)
+
+class SearchPost(generics.CreateAPIView):
+    serializer_class = serializers.SearchPostSerializer
+    
