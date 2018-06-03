@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import os
 from pandas import to_timedelta,to_datetime
 from django.utils import timezone
-from .models import Flight, Layover, Airport
+from .models import Flight, Layover, Airport, Search
 
 
 class SW_Sel_Search():
@@ -21,6 +21,8 @@ class SW_Sel_Search():
         # Set all the kwargs
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+        self.search = Search.objects.create()
 
     def get_browser(self):
         chrome_options = Options()
@@ -112,7 +114,8 @@ class SW_Sel_Search():
                 arrive_time = destination_airport.get_tz_obj().localize(to_datetime(arrive_date_time)),
                 wanna_get_away = prices.get('Wanna Get Away'),
                 anytime = prices.get('Anytime'),
-                business_select = prices.get('Business Select')
+                business_select = prices.get('Business Select'),
+                search = self.search
                 )
 
             layovers,duration,change_planes = self.get_layover_cities_times(outbound)
@@ -122,7 +125,7 @@ class SW_Sel_Search():
                     airport = Airport.objects.get(pk=layover),
                     flight = f,
                     change_planes = change_plane,
-                    time = duration.total_seconds()/60.0
+                    time = duration.total_seconds()
                 )
             # Flight.object.create(
             #     origin_airport = Airport.objects.get(pk=self.originationAirportCode),

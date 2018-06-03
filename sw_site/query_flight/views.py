@@ -37,7 +37,7 @@ def search(request):
                 returnDate=returnDate)
             sw.save_all_flights()
             sw.browser.quit()
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('query_flight:searchs-detail',args=[sw.search.id]))
 
     # if a GET (or any other method) we'll create a blank form
     else:

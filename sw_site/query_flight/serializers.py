@@ -78,10 +78,6 @@ class SearchSerializer(serializers.ModelSerializer):
         fields = ('id','time','num_flights','flight_set')
         # read_only_fields = ('time','num_flights')
 
-# class AirportPKSerializer(serializers.PrimaryKeyRelatedField):
-#     def get_queryset(self):
-#         return Airport.objects.all()
-
 class FlightPostSerializer(serializers.ModelSerializer):
     # origin_airport = AirportPKSerializer(read_only=False,required=True)
     # destination_airport = AirportSerializer(read_only=False,required=True)
