@@ -12,6 +12,8 @@ from django.utils import timezone
 from .models import Flight, Layover, Airport, Search
 
 
+
+
 class SW_Sel_Search():
     def __init__(self,browser=None,**kwargs):
         if browser is None:
@@ -44,10 +46,10 @@ class SW_Sel_Search():
             'passengerType':'ADULT',
             'promoCode':'',
             'returnAirportCode':'',
-            'returnDate':self.returnDate,
+            'returnDate':'',
             'returnTimeOfDay':'ALL_DAY',
             'seniorPassengersCount':0,
-            'tripType':'roundtrip'}
+            'tripType':'oneway'}
         params = urllib.parse.urlencode(payload)
         url = "https://www.southwest.com/air/booking/select.html?"
         return url + params

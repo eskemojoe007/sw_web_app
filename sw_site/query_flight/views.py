@@ -28,13 +28,13 @@ def search(request):
             originationAirportCode = form.cleaned_data['origin_airport'][0].abrev
             destinationAirportCode = form.cleaned_data['destination_airport'][0].abrev
             departureDate = form.cleaned_data['depart_date'].strftime('%Y-%m-%d')
-            returnDate = form.cleaned_data['return_date'].strftime('%Y-%m-%d')
+            # returnDate = form.cleaned_data['return_date'].strftime('%Y-%m-%d')
 
 
             sw = SW_Sel_Search(departureDate=departureDate,
                 destinationAirportCode=destinationAirportCode,
-                originationAirportCode=originationAirportCode,
-                returnDate=returnDate)
+                originationAirportCode=originationAirportCode)
+                # returnDate=returnDate)
             sw.save_all_flights()
             sw.browser.quit()
             return HttpResponseRedirect(reverse('query_flight:searchs-detail',args=[sw.search.id]))

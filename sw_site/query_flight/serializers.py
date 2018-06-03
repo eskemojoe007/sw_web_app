@@ -115,13 +115,14 @@ class SearchPostSerializer(serializers.Serializer):
     destinationAirportCode = serializers.CharField(max_length=4)
     originationAirportCode = serializers.CharField(max_length=4)
     departureDate = serializers.DateField()
-    returnDate = serializers.DateField()
+    # returnDate = serializers.DateField()
 
     def create(self,validated_data):
         sw = SW_Sel_Search(departureDate=validated_data['departureDate'],
             destinationAirportCode=validated_data['destinationAirportCode'],
-            originationAirportCode=validated_data['originationAirportCode'],
-            returnDate=validated_data['returnDate'])
+            originationAirportCode=validated_data['originationAirportCode'])
+            # originationAirportCode=validated_data['originationAirportCode'],
+            # returnDate=validated_data['returnDate'])
         sw.save_all_flights()
         sw.browser.quit()
         return sw
@@ -144,9 +145,9 @@ class SearchPostSerializer(serializers.Serializer):
         self._check_date_past(value)
         return value
 
-    def validate_returnDate(self,value):
-        self._check_date_past(value)
-        return value
+    # def validate_returnDate(self,value):
+    #     self._check_date_past(value)
+    #     return value
 
     def _check_date_past(self,input_date):
         n = timezone.now().date()
@@ -154,10 +155,10 @@ class SearchPostSerializer(serializers.Serializer):
             raise ValidationError(_('Invalid date - date is in the past: current date - %(now)s, your date - %(your)s'),
                 params={'now':n,'your':input_date},code='past_date')
 
-    def validate(self,attrs):
-        if attrs['returnDate'] < attrs['departureDate']:
-            raise ValidationError(_(
-                'Invalid date - return must be after departure: return date - %(ret)s, departur date - %(dep)s'),
-                params={'ret':attrs['returnDate'],'dep':attrs['departureDate']},
-                code='bad_date')
-        return attrs
+    # def validate(self,attrs):
+    #     if attrs['returnDate'] < attrs['departureDate']:
+    #         raise ValidationError(_(
+    #             'Invalid date - return must be after departure: return date - %(ret)s, departur date - %(dep)s'),
+    #             params={'ret':attrs['returnDate'],'dep':attrs['departureDate']},
+    #             code='bad_date')
+    #     return attrs
