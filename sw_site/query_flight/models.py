@@ -92,18 +92,6 @@ class Airport(models.Model):
         if ((self.state is None) or (self.state == '')) and self.country =='us':
             self.state = self.get_state()
 
-    # def save(self, *args, **kwargs):
-    #     # Overright save so we can look up the coutnry and state if its missing
-    #     # as it is optional.  If its empty or none...go look it up
-    #     self.add_loc_fields()
-    #     super().save(*args,**kwargs)
-
-    # def clean(self):
-    #     # Overwrite clean so we can add the fields and validate properly if they are missing.
-    #     super().clean()
-    #     self.add_loc_fields()
-
-
 class Search(models.Model):
     time = models.DateTimeField(auto_now=True)
 
@@ -120,8 +108,7 @@ class FlightManager(models.Manager):
         flight.save()
         return flight
 
-    @staticmethod
-    def validate_flight(**kwargs):
+    def validate_flight(self,**kwargs):
         flight = Flight(**kwargs)
         if flight.origin_airport == flight.destination_airport:
             raise ValidationError(_(
@@ -150,7 +137,7 @@ class Flight(models.Model):
     objects = FlightManager()
     def __str__(self):
         # Return the title and abrev as the default string
-        return '{} - {}'.format(self.origin_airport.abrev,self.destination_airport.abrev)
+        return '{} - {} - {}'.format(self.id,self.origin_airport.abrev,self.destination_airport.abrev)
 
     def travel_time(self):
         return self.arrive_time - self.depart_time
@@ -165,16 +152,26 @@ class Flight(models.Model):
         # TODO: This could be a terrible slow method
         return len(self.layover_set.all())
 
-    # def clean(self):
-    #     super().clean()
-    #     if self.origin_airport == self.destination_airport:
-    #         raise ValidationError(_(
-    #             'Origin and Destination cant be the same: {a}'),
-    #             params={'a':self.origin_airport},code='same_airports')
-    #     if self.arrive_time < self.depart_time:
-    #         raise ValidationError(_(
-    #             'Must depart before arriving. Depart: {d}, Arrive: {a} '),
-    #             params={'a':self.arrive_time,'d':self.depart_time},code='badtimes')
+class LayoverManager(models.Manager):
+    def create(self,**kwargs):
+        self.validate_layover(**kwargs)
+        layover = Layover(**kwargs)
+        layover.save()
+        return layover
+
+    def validate_layover(self,**kwargs):
+        # layover = Layover(**kwargs)
+        if (kwargs['airport'] == kwargs['flight'].origin_airport) or(
+            kwargs['airport'] == kwargs['flight'].destination_airport):
+
+            raise ValidationError(_(
+                'Layover (%(layover)s) cant happen at origin (%(origin)s) '
+                'or destination (%(destination)s) '),
+                params={'layover':kwargs['airport'],
+                    'origin':kwargs['flight'].origin_airport,
+                    'destination':kwargs['flight'].destination_airport},
+                code='bad_layover')
+
 
 class Layover(models.Model):
     airport = models.ForeignKey(Airport,on_delete=models.CASCADE,verbose_name='Airport')
@@ -182,22 +179,23 @@ class Layover(models.Model):
     change_planes = models.BooleanField(verbose_name='Change Planes?')
     time = models.FloatField(validators=[MinValueValidator(0)],verbose_name='Time of layover in seconds')
 
+    objects = LayoverManager()
     def __str__(self):
         return '{} - {}'.format(self.airport.abrev,self.timedelta())
 
     def timedelta(self):
         return timezone.timedelta(seconds=self.time)
 
-    def clean(self):
-        super().clean()
-
-        if (self.airport == self.flight.origin_airport) or(
-            self.airport == self.flight.destination_airport):
-
-            raise ValidationError(_(
-                'Layover ({layover}) cant happen at origin ({orign}) '
-                'or destination ({destination}) '),
-                params={'layover':self.airport,
-                    'origin':self.flight.origin_airport,
-                    'destination':self.flight.destination_airport},
-                code='bad_layover')
+    # def clean(self):
+    #     super().clean()
+    #
+    #     if (self.airport == self.flight.origin_airport) or(
+    #         self.airport == self.flight.destination_airport):
+    #
+    #         raise ValidationError(_(
+    #             'Layover ({layover}) cant happen at origin ({orign}) '
+    #             'or destination ({destination}) '),
+    #             params={'layover':self.airport,
+    #                 'origin':self.flight.origin_airport,
+    #                 'destination':self.flight.destination_airport},
+    #             code='bad_layover')

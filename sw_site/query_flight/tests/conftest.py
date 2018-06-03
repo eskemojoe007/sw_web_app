@@ -85,6 +85,12 @@ def post_flight_dict(atl_airport,boi_airport,search):
 def basic_flight(basic_flight_dict):
     return Flight.objects.create(**basic_flight_dict)
 
+@pytest.fixture
+def post_layover_dict(basic_flight,dal_airport):
+    return {'airport':dal_airport.abrev,
+        'change_planes':True,
+        'time':3600.0}
+
 # This gets all the airports for tests
 # def pytest_generate_tests(metafunc):
 #     if 'airports' in metafunc.fixturenames:
