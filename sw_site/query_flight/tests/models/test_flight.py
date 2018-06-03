@@ -49,31 +49,30 @@ class Test_Flight_Model(object):
         assert timezone.is_aware(basic_flight.depart_time)
         assert timezone.is_aware(basic_flight.arrive_time)
 
+
     @pytest.mark.parametrize('kwargs,error_bool',[
         ({'wanna_get_away': -50},True),
         ({'anytime': -50},True),
         ({'business_select': -50},True),
 
     ])
-
     def test_validators1(self,basic_flight_dict,kwargs,error_bool):
         basic_flight_dict.update(kwargs)
+
         f = Flight(**basic_flight_dict)
         with pytest.raises(ValidationError):
             f.full_clean()
+
 
     def test_airport_match(self,basic_flight_dict,atl_airport):
         basic_flight_dict.update({'origin_airport':atl_airport,
             'destination_airport':atl_airport})
-        f = Flight(**basic_flight_dict)
 
         with pytest.raises(ValidationError):
-            f.full_clean()
+            f = Flight.objects.create(**basic_flight_dict)
 
     def test_times(self,basic_flight_dict):
         basic_flight_dict.update({'arrive_time':basic_flight_dict['depart_time'],
             'depart_time':basic_flight_dict['arrive_time']})
-        f = Flight(**basic_flight_dict)
-
         with pytest.raises(ValidationError):
-            f.full_clean()
+            f = Flight.objects.create(**basic_flight_dict)

@@ -42,8 +42,6 @@ class LayoverSerializer(serializers.ModelSerializer):
         fields = ('airport','change_planes','timedelta','time')
         extra_kwargs = {'time':{'write_only':True}}
 
-
-
 class FlightGetSerializer(serializers.ModelSerializer):
     origin_airport = AirportSerializer(read_only=True,required=False)
     destination_airport = AirportSerializer(read_only=True,required=False)
@@ -64,6 +62,20 @@ class FlightGetSerializer(serializers.ModelSerializer):
             'layover_set',
         )
         read_only_fields = ('id','travel_time','min_price',)
+
+    def validate(self, attrs):
+        # By default we don't need country or state...here we make you need it
+        # This is similar to model code, but needs to be added here as to trigger
+        # 400 errors and some other basic validation
+
+        if not attrs.get('country'):
+            airport = Airport.objects.lookup_missing(**attrs)
+            attrs.update({'country':airport.country})
+
+            if airport.state:
+                attrs.update({'state':airport.state})
+        # raise serializers.ValidationError(_('Need to specify country on serializer'),code='no country')
+        return attrs
 
 class SearchSerializer(serializers.ModelSerializer):
     flight_set = FlightGetSerializer(read_only=True,many=True,required=False)
@@ -101,3 +113,8 @@ class FlightPostSerializer(serializers.ModelSerializer):
     # since its so simple.
     # def create(self,validated_data):
     #     pass
+
+    def validate(self, attrs):
+        '''want to run the checks in the manager'''
+        flight = Flight.objects.validate_flight(**attrs)
+        return attrs

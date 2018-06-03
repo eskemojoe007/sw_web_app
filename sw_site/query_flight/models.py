@@ -11,8 +11,9 @@ from six import string_types
 
 class AirportManager(models.Manager):
     def create(self,**kwargs):
-        airport = Airport(**kwargs)
-        airport.add_loc_fields()
+        airport = self.lookup_missing(**kwargs)
+        # airport = Airport(**kwargs)
+        # airport.add_loc_fields()
         airport.save()
         return airport
 
@@ -113,6 +114,27 @@ class Search(models.Model):
         # TODO: This could be a terrible slow method
         return len(self.flight_set.all())
 
+class FlightManager(models.Manager):
+    def create(self,**kwargs):
+        flight = self.validate_flight(**kwargs)
+        flight.save()
+        return flight
+
+    @staticmethod
+    def validate_flight(**kwargs):
+        flight = Flight(**kwargs)
+        if flight.origin_airport == flight.destination_airport:
+            raise ValidationError(_(
+                'Origin and Destination cant be the same: %(a)s'),
+                params={'a':flight.origin_airport.abrev},code='same_airports')
+        if flight.arrive_time < flight.depart_time:
+            raise ValidationError(_(
+                'Must depart before arriving. Depart: %(d)s, Arrive: %(a)s '),
+                params={'a':flight.arrive_time,'d':flight.depart_time},code='badtimes')
+
+        return flight
+
+
 class Flight(models.Model):
 
     # TODO: Need to add point support...but for now just dollars.
@@ -125,6 +147,7 @@ class Flight(models.Model):
     business_select = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
     search = models.ForeignKey(Search,on_delete=models.CASCADE,verbose_name='Search')
 
+    objects = FlightManager()
     def __str__(self):
         # Return the title and abrev as the default string
         return '{} - {}'.format(self.origin_airport.abrev,self.destination_airport.abrev)
@@ -142,16 +165,16 @@ class Flight(models.Model):
         # TODO: This could be a terrible slow method
         return len(self.layover_set.all())
 
-    def clean(self):
-        super().clean()
-        if self.origin_airport == self.destination_airport:
-            raise ValidationError(_(
-                'Origin and Destination cant be the same: {a}'),
-                params={'a':self.origin_airport},code='same_airports')
-        if self.arrive_time < self.depart_time:
-            raise ValidationError(_(
-                'Must depart before arriving. Depart: {d}, Arrive: {a} '),
-                params={'a':self.arrive_time,'d':self.depart_time},code='badtimes')
+    # def clean(self):
+    #     super().clean()
+    #     if self.origin_airport == self.destination_airport:
+    #         raise ValidationError(_(
+    #             'Origin and Destination cant be the same: {a}'),
+    #             params={'a':self.origin_airport},code='same_airports')
+    #     if self.arrive_time < self.depart_time:
+    #         raise ValidationError(_(
+    #             'Must depart before arriving. Depart: {d}, Arrive: {a} '),
+    #             params={'a':self.arrive_time,'d':self.depart_time},code='badtimes')
 
 class Layover(models.Model):
     airport = models.ForeignKey(Airport,on_delete=models.CASCADE,verbose_name='Airport')

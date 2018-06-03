@@ -75,6 +75,13 @@ def basic_flight_dict(atl_airport,boi_airport,search):
         'wanna_get_away':438.0,'anytime':571.0,'business_select':599.0,'search':search}
 
 @pytest.fixture
+def post_flight_dict(atl_airport,boi_airport,search):
+    return {'origin_airport':atl_airport.abrev,'destination_airport':boi_airport.abrev,
+        'depart_time':atl_airport.get_tz_obj().localize(timezone.datetime(2018,4,26,6,00,00)),
+        'arrive_time':boi_airport.get_tz_obj().localize(timezone.datetime(2018,4,26,13,50,00)),
+        'wanna_get_away':438.0,'anytime':571.0,'business_select':599.0,'search':search.id}
+
+@pytest.fixture
 def basic_flight(basic_flight_dict):
     return Flight.objects.create(**basic_flight_dict)
 
