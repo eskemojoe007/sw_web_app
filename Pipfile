@@ -12,6 +12,8 @@ requests = "*"
 pandas = "*"
 selenium = "*"
 djangorestframework = "*"
+django-split-settings = "*"
+python-decouple = "*"
 
 [dev-packages]
 setuptools = "*"
