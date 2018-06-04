@@ -12,6 +12,12 @@ requests = "*"
 pandas = "*"
 selenium = "*"
 djangorestframework = "*"
+django-split-settings = "*"
+python-decouple = "*"
+gunicorn = "*"
+"psycopg2" = "*"
+dj-database-url = "*"
+django-heroku = "*"
 
 [dev-packages]
 setuptools = "*"
