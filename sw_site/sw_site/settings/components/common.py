@@ -18,6 +18,8 @@ from sw_site.settings.components import BASE_DIR, config
 ALLOWED_HOSTS = ['localhost','127.0.0.1','testserver']
 
 
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'fx)pch!nnzo-5ng@q04fi6v0c0h&q#&^1$tf(@zdy%618tdeor')
+
 # Application definition
 
 INSTALLED_APPS = [
