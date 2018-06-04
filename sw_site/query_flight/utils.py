@@ -10,28 +10,95 @@ import os
 from pandas import to_timedelta,to_datetime
 from django.utils import timezone
 from .models import Flight, Layover, Airport, Search
+import six
+import collections
+import itertools
 
 
+class SW_Sel_base(object):
+    required_keys = ['departureDate','destinationAirportCode','originationAirportCode']
 
-
-class SW_Sel_Search():
     def __init__(self,browser=None,**kwargs):
         if browser is None:
-            browser = self.get_browser()
+            browser = self.create_browser()
         self.browser = browser
 
         # Set all the kwargs
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-        self.search = Search.objects.create()
+        #Check that we have all the necessary keys
+        assert self._check_keylist_exist(self.required_keys)
 
-    def get_browser(self):
+        self.create_search()
+        # self.search = Search.objects.create()
+
+    def create_browser(self):
         chrome_options = Options()
         chrome_options.set_headless(True)
         chrome_driver = os.path.join('query_flight','static','query_flight',"chromedriver.exe")
         return webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
 
+    def create_search(self):
+
+        if not self._check_key_exist('search'):
+            self.search = Search.objects.create()
+            return self.search
+
+        if isinstance(self.search,Search):
+            return self.search
+
+        else:
+            # TODO: Could ad a lookup to get the right search object here
+            raise ValueError('Specified search is just a number it seems')
+
+    @staticmethod
+    def _check_iterable(x):
+        if (not isinstance(x,six.string_types)) and (not isinstance(x,six.binary_type)):
+            if isinstance(x,collections.Iterable):
+                return True
+        return False
+
+    def _check_keylist_exist(self,l):
+        return all(list(map(self._check_key_exist,l)))
+
+    def _check_key_exist(self,key):
+        return hasattr(self,key)
+
+
+
+class SW_Sel_Multiple(SW_Sel_base):
+    def __init__(self,browser = None, **kwargs):
+        super().__init__(browser=browser,**kwargs)
+
+        self._make_iterable(self.required_keys)
+
+        self._create_cases()
+
+
+    def _make_iterable(self,fields):
+        for field in fields:
+            if not self._check_iterable(getattr(self,field)):
+                setattr(self,field,[getattr(self,field)])
+
+    def _create_cases(self):
+        s = [getattr(self,field) for field in self.required_keys]
+        raw_cases = list(itertools.product(*s))
+
+        self.cases = []
+        for case in raw_cases:
+            d = {}
+            for key,value in zip(self.required_keys,case):
+                d[key] = value
+            self.cases.append(d)
+
+    def save_all_flights(self,**kwargs):
+        for case in self.cases:
+            SW_Sel_Single(browser=self.browser,search=self.search,**case).save_all_flights(**kwargs)
+
+
+
+class SW_Sel_Single(SW_Sel_base):
 
     def get_sw_url(self):
         payload = {

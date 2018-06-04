@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 import pytz
 import six
-from .utils import SW_Sel_Search
+from .utils import SW_Sel_Single
 
 class TimezoneField(serializers.Field):
     def to_representation(self, obj):
@@ -118,7 +118,7 @@ class SearchPostSerializer(serializers.Serializer):
     # returnDate = serializers.DateField()
 
     def create(self,validated_data):
-        sw = SW_Sel_Search(departureDate=validated_data['departureDate'],
+        sw = SW_Sel_Single(departureDate=validated_data['departureDate'],
             destinationAirportCode=validated_data['destinationAirportCode'],
             originationAirportCode=validated_data['originationAirportCode'])
             # originationAirportCode=validated_data['originationAirportCode'],
