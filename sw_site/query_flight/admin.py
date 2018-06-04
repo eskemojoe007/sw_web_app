@@ -71,6 +71,6 @@ admin.site.register(Flight,FlightAdmin)
 
 class LayoverAdmin(admin.ModelAdmin):
     # fields = ['pub_date','question_text']
-    list_display = ('airport','get_timedelta','change_planes')
+    list_display = ('airport','timedelta','change_planes')
     # list_filter = ['sw_airport']
 admin.site.register(Layover,LayoverAdmin)

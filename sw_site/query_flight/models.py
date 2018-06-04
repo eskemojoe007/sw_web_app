@@ -9,6 +9,20 @@ from django.utils import timezone
 import pytz
 from six import string_types
 
+class AirportManager(models.Manager):
+    def create(self,**kwargs):
+        airport = self.lookup_missing(**kwargs)
+        # airport = Airport(**kwargs)
+        # airport.add_loc_fields()
+        airport.save()
+        return airport
+
+    def lookup_missing(self,**kwargs):
+        airport = Airport(**kwargs)
+        airport.add_loc_fields()
+        return airport
+
+
 class Airport(models.Model):
 
     title = models.CharField(verbose_name='Long Name of Airport',max_length=50)
@@ -20,6 +34,8 @@ class Airport(models.Model):
 
     country = models.CharField(max_length=20,blank=True)
     state = models.CharField(max_length=20,blank=True)
+
+    objects = AirportManager()
 
     sw_airport.admin_order_field = 'title'
 
@@ -33,7 +49,7 @@ class Airport(models.Model):
     def _get_sub_loc(self,key):
         # Here we use geolocator to get the proper key
         geolocator = Nominatim()
-        location = geolocator.reverse("{:f}, {:f}".format(self.latitude,self.longitude))
+        location = geolocator.reverse("{:f}, {:f}".format(self.latitude,self.longitude),timeout=10)
 
         # Lots and lots of error checking...looking for error from Geolocator
         # and for missing fields for international or other addresses
@@ -55,7 +71,7 @@ class Airport(models.Model):
             else:
                 raise ValidationError(_('Got a response from Geolocator, had an address,KEY_ERROR of some kind %(raw)s'),params={'raw':location.raw},code='some_key')
         except:
-            raise ValidationError(_('NO CLUE WHAT WENT WRONG'),code='no_clue')
+            raise ValidationError(_('Geolocator - NO CLUE WHAT WENT WRONG'),code='no_clue')
 
 
     def get_tz_obj(self):
@@ -76,39 +92,52 @@ class Airport(models.Model):
         if ((self.state is None) or (self.state == '')) and self.country =='us':
             self.state = self.get_state()
 
-    def save(self, *args, **kwargs):
-        # Overright save so we can look up the coutnry and state if its missing
-        # as it is optional.  If its empty or none...go look it up
-        self.add_loc_fields()
-        super().save(*args,**kwargs)
+class Search(models.Model):
+    time = models.DateTimeField(auto_now=True)
 
-    def clean(self):
-        # Overwrite clean so we can add the fields and validate properly if they are missing.
-        super().clean()
-        self.add_loc_fields()
+    def __str__(self):
+        return '{} - {}'.format(self.id,self.time)
 
+    def num_flights(self):
+        # TODO: This could be a terrible slow method
+        return len(self.flight_set.all())
 
-# class Search(models.Model):
-#     time = models.DateTimeField(auto_now=True)
-#
-#     def __str__(self):
-#         return '{}'.format(self.time)
+class FlightManager(models.Manager):
+    def create(self,**kwargs):
+        flight = self.validate_flight(**kwargs)
+        flight.save()
+        return flight
+
+    def validate_flight(self,**kwargs):
+        flight = Flight(**kwargs)
+        if flight.origin_airport == flight.destination_airport:
+            raise ValidationError(_(
+                'Origin and Destination cant be the same: %(a)s'),
+                params={'a':flight.origin_airport.abrev},code='same_airports')
+        if flight.arrive_time < flight.depart_time:
+            raise ValidationError(_(
+                'Must depart before arriving. Depart: %(d)s, Arrive: %(a)s '),
+                params={'a':flight.arrive_time,'d':flight.depart_time},code='badtimes')
+
+        return flight
+
 
 class Flight(models.Model):
 
     # TODO: Need to add point support...but for now just dollars.
     origin_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,related_name='origin_set',verbose_name='Origin Airport')
     destination_airport = models.ForeignKey(Airport, on_delete=models.CASCADE,related_name='destination_set',verbose_name='Destination Airport')
-    depart_time = models.DateTimeField(verbose_name='Departure Time (UTC)')
-    arrive_time = models.DateTimeField(verbose_name='Arrival Time (UTC)')
+    depart_time = models.DateTimeField(verbose_name='Departure Time')
+    arrive_time = models.DateTimeField(verbose_name='Arrival Time')
     wanna_get_away = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
     anytime = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
     business_select = models.FloatField(validators=[MinValueValidator(0)],null=True,blank=True)
-    # search = models.ForeignKey(Search,on_delete=models.CASCADE,verbose_name='Search')
+    search = models.ForeignKey(Search,on_delete=models.CASCADE,verbose_name='Search')
 
+    objects = FlightManager()
     def __str__(self):
         # Return the title and abrev as the default string
-        return '{} - {}'.format(self.origin_airport.abrev,self.destination_airport.abrev)
+        return '{} - {} - {}'.format(self.id,self.origin_airport.abrev,self.destination_airport.abrev)
 
     def travel_time(self):
         return self.arrive_time - self.depart_time
@@ -120,15 +149,53 @@ class Flight(models.Model):
         else:
             return None
     def num_layovers(self):
+        # TODO: This could be a terrible slow method
         return len(self.layover_set.all())
+
+class LayoverManager(models.Manager):
+    def create(self,**kwargs):
+        self.validate_layover(**kwargs)
+        layover = Layover(**kwargs)
+        layover.save()
+        return layover
+
+    def validate_layover(self,**kwargs):
+        # layover = Layover(**kwargs)
+        if (kwargs['airport'] == kwargs['flight'].origin_airport) or(
+            kwargs['airport'] == kwargs['flight'].destination_airport):
+
+            raise ValidationError(_(
+                'Layover (%(layover)s) cant happen at origin (%(origin)s) '
+                'or destination (%(destination)s) '),
+                params={'layover':kwargs['airport'],
+                    'origin':kwargs['flight'].origin_airport,
+                    'destination':kwargs['flight'].destination_airport},
+                code='bad_layover')
+
+
 class Layover(models.Model):
     airport = models.ForeignKey(Airport,on_delete=models.CASCADE,verbose_name='Airport')
     flight = models.ForeignKey(Flight,on_delete=models.CASCADE,verbose_name='Flight')
     change_planes = models.BooleanField(verbose_name='Change Planes?')
-    time = models.FloatField(validators=[MinValueValidator(0)],verbose_name='Time of layover in minutes')
+    time = models.FloatField(validators=[MinValueValidator(0)],verbose_name='Time of layover in seconds')
 
+    objects = LayoverManager()
     def __str__(self):
-        return '{} - {}'.format(self.airport.abrev,self.get_timedelta())
+        return '{} - {}'.format(self.airport.abrev,self.timedelta())
 
-    def get_timedelta(self):
-        return timezone.timedelta(minutes=self.time)
+    def timedelta(self):
+        return timezone.timedelta(seconds=self.time)
+
+    # def clean(self):
+    #     super().clean()
+    #
+    #     if (self.airport == self.flight.origin_airport) or(
+    #         self.airport == self.flight.destination_airport):
+    #
+    #         raise ValidationError(_(
+    #             'Layover ({layover}) cant happen at origin ({orign}) '
+    #             'or destination ({destination}) '),
+    #             params={'layover':self.airport,
+    #                 'origin':self.flight.origin_airport,
+    #                 'destination':self.flight.destination_airport},
+    #             code='bad_layover')
