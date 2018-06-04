@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 import os
 from pandas import to_timedelta,to_datetime
 from django.utils import timezone
@@ -122,24 +123,27 @@ class SW_Sel_Single(SW_Sel_base):
         return url + params
 
 
-    def get_result_soup(self,url=None,browser=None,timeout=30):
+    def get_result_soup(self,url=None,browser=None,timeout=10):
         if browser is None:
             browser = self.browser
         if url is None:
             url = self.get_sw_url()
 
         browser.get(url)
+        ## TODO: Need to check for the div class='error-no-routes-exist'
         try:
             # webdriver might be too fast. Tell it to slow down.
             wait = WebDriverWait(browser, timeout)
             wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "currency_dollars")))
-        except TimeoutError:
-            pass
+        except TimeoutException:
+            return None
         return BeautifulSoup(browser.page_source,'html.parser')
 
     def save_all_flights(self,**kwargs):
 
         soup = self.get_result_soup(**kwargs)
+        if soup is None:
+            return None
         outbound_table = soup.findAll('ul')[2]
         outbounds = outbound_table.findAll('li',attrs={'class':'air-booking-select-detail'})
 
