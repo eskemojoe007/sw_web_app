@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views import generic
 from .forms import FlightForm,SearchForm
 from django.urls import reverse
-from .utils import SW_Sel_Search
+from .utils import SW_Sel_Multiple
 
 def index(request):
     return render(request,'query_flight/index.html')
@@ -25,19 +25,19 @@ def search(request):
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            originationAirportCode = form.cleaned_data['origin_airport'][0].abrev
-            destinationAirportCode = form.cleaned_data['destination_airport'][0].abrev
+            originationAirportCode = form.cleaned_data['origin_airport'].values_list('abrev', flat=True)
+            destinationAirportCode = form.cleaned_data['destination_airport'].values_list('abrev', flat=True)
             departureDate = form.cleaned_data['depart_date'].strftime('%Y-%m-%d')
-            returnDate = form.cleaned_data['return_date'].strftime('%Y-%m-%d')
+            # returnDate = form.cleaned_data['return_date'].strftime('%Y-%m-%d')
 
 
-            sw = SW_Sel_Search(departureDate=departureDate,
+            sw = SW_Sel_Multiple(departureDate=departureDate,
                 destinationAirportCode=destinationAirportCode,
-                originationAirportCode=originationAirportCode,
-                returnDate=returnDate)
+                originationAirportCode=originationAirportCode)
+                # returnDate=returnDate)
             sw.save_all_flights()
             sw.browser.quit()
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('query_flight:searchs-detail',args=[sw.search.id]))
 
     # if a GET (or any other method) we'll create a blank form
     else:

@@ -1,8 +1,8 @@
 
 <h1>Query Flight Index</h1>
-
+{% comment %}
 <a href="{% url 'Airport' %}">See all airports</a>
 
 <a href="{% url 'New_Flight' %}">Add a Flight</a>
-
-<a href="{% url 'search' %}">Search</a>
+{% endcomment %}
+<a href="{% url 'query_flight:search' %}">Search</a>

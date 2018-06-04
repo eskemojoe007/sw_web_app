@@ -1,9 +1,11 @@
 from rest_framework import serializers
 from .models import Airport, Flight, Layover, Search
-# from django.core.exceptions import ValidationError
+from django.utils import timezone
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 import pytz
 import six
+from .utils import SW_Sel_Single
 
 class TimezoneField(serializers.Field):
     def to_representation(self, obj):
@@ -13,7 +15,7 @@ class TimezoneField(serializers.Field):
         try:
             return pytz.timezone(str(data))
         except pytz.exceptions.UnknownTimeZoneError:
-            raise serializers.ValidationError(_('Unknown timezone'),code='unknown Timezone')
+            raise ValidationError(_('Unknown timezone'),code='unknown Timezone')
 
 
 class AirportSerializer(serializers.ModelSerializer):
@@ -33,7 +35,7 @@ class AirportSerializer(serializers.ModelSerializer):
 
             if airport.state:
                 attrs.update({'state':airport.state})
-        # raise serializers.ValidationError(_('Need to specify country on serializer'),code='no country')
+        # raise ValidationError(_('Need to specify country on serializer'),code='no country')
         return attrs
 
 class LayoverSerializer(serializers.ModelSerializer):
@@ -51,8 +53,8 @@ class LayoverSerializer(serializers.ModelSerializer):
 
 
 class FlightGetSerializer(serializers.ModelSerializer):
-    origin_airport = AirportSerializer(read_only=True,required=False)
-    destination_airport = AirportSerializer(read_only=True,required=False)
+    # origin_airport = AirportSerializer(read_only=True,required=False)
+    # destination_airport = AirportSerializer(read_only=True,required=False)
     layover_set = LayoverSerializer(read_only=True,many=True,required=False)
     class Meta:
         model = Flight
@@ -77,10 +79,6 @@ class SearchSerializer(serializers.ModelSerializer):
         model = Search
         fields = ('id','time','num_flights','flight_set')
         # read_only_fields = ('time','num_flights')
-
-# class AirportPKSerializer(serializers.PrimaryKeyRelatedField):
-#     def get_queryset(self):
-#         return Airport.objects.all()
 
 class FlightPostSerializer(serializers.ModelSerializer):
     # origin_airport = AirportPKSerializer(read_only=False,required=True)
@@ -112,3 +110,55 @@ class FlightPostSerializer(serializers.ModelSerializer):
         '''want to run the checks in the manager'''
         flight = Flight.objects.validate_flight(**attrs)
         return attrs
+
+class SearchPostSerializer(serializers.Serializer):
+    destinationAirportCode = serializers.CharField(max_length=4)
+    originationAirportCode = serializers.CharField(max_length=4)
+    departureDate = serializers.DateField()
+    # returnDate = serializers.DateField()
+
+    def create(self,validated_data):
+        sw = SW_Sel_Single(departureDate=validated_data['departureDate'],
+            destinationAirportCode=validated_data['destinationAirportCode'],
+            originationAirportCode=validated_data['originationAirportCode'])
+            # originationAirportCode=validated_data['originationAirportCode'],
+            # returnDate=validated_data['returnDate'])
+        sw.save_all_flights()
+        sw.browser.quit()
+        return sw
+
+    def validate_destinationAirportCode(self,value):
+        return self._check_airport(value)
+    def validate_originationAirportCode(self,value):
+        return self._check_airport(value)
+    def _check_airport(self,code):
+        if not Airport.objects.filter(abrev__iexact=code).exists():
+            raise ValidationError(_(
+                'Specified Airport is not valid: %(key)s'),
+                params={'key':code},code='bad_airport')
+            return code
+        else:
+            return Airport.objects.get(abrev__iexact=code).abrev
+
+
+    def validate_departureDate(self,value):
+        self._check_date_past(value)
+        return value
+
+    # def validate_returnDate(self,value):
+    #     self._check_date_past(value)
+    #     return value
+
+    def _check_date_past(self,input_date):
+        n = timezone.now().date()
+        if input_date < n:
+            raise ValidationError(_('Invalid date - date is in the past: current date - %(now)s, your date - %(your)s'),
+                params={'now':n,'your':input_date},code='past_date')
+
+    # def validate(self,attrs):
+    #     if attrs['returnDate'] < attrs['departureDate']:
+    #         raise ValidationError(_(
+    #             'Invalid date - return must be after departure: return date - %(ret)s, departur date - %(dep)s'),
+    #             params={'ret':attrs['returnDate'],'dep':attrs['departureDate']},
+    #             code='bad_date')
+    #     return attrs
