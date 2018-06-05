@@ -98,4 +98,5 @@ ENV/
 
 # mypy
 .mypy_cache/
-sw_site/query_flight/static/query_flight/chromedriver.exe
+query_flight/static/query_flight/chromedriver.exe
+db.sqlite3
