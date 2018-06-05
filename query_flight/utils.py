@@ -202,6 +202,7 @@ class SW_Sel_Single(SW_Sel_base):
             layovers,duration,change_planes = self.get_layover_cities_times(outbound)
             for layover,duration,change_plane in zip(layovers,duration,change_planes):
 
+                # TODO: Add airport error checking here...need to put a generic airport if there is an error
                 l = Layover.objects.create(
                     airport = Airport.objects.get(pk=layover),
                     flight = f,

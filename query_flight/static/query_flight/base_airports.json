@@ -1,0 +1,1201 @@
+[{
+    "model": "query_flight.airport",
+    "pk": "ABQ",
+    "fields": {
+        "title": "Albuquerque, NM",
+        "timezone": "America/Denver",
+        "latitude": 35.04019927978516,
+        "longitude": -106.60900115966795,
+        "sw_airport": true,
+        "country": "us",
+        "state": "New Mexico"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "ALB",
+    "fields": {
+        "title": "Albany, NY",
+        "timezone": "America/New_York",
+        "latitude": 42.74829864501953,
+        "longitude": -73.80169677734375,
+        "sw_airport": true,
+        "country": "us",
+        "state": "New York"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "AMA",
+    "fields": {
+        "title": "Amarillo, TX",
+        "timezone": "America/Chicago",
+        "latitude": 35.219398498535156,
+        "longitude": -101.70600128173828,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Texas"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "ATL",
+    "fields": {
+        "title": "Atlanta",
+        "timezone": "US/Eastern",
+        "latitude": 33.6407,
+        "longitude": -84.4277,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Georgia"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "AUA",
+    "fields": {
+        "title": "Aruba, Aruba",
+        "timezone": "America/Aruba",
+        "latitude": 12.501399993896484,
+        "longitude": -70.01519775390625,
+        "sw_airport": true,
+        "country": "nl",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "AUS",
+    "fields": {
+        "title": "Austin, TX",
+        "timezone": "America/Chicago",
+        "latitude": 30.194499969482425,
+        "longitude": -97.6698989868164,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Texas"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "BDL",
+    "fields": {
+        "title": "Hartford, CT",
+        "timezone": "America/New_York",
+        "latitude": 41.9388999939,
+        "longitude": -72.68319702149999,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Connecticut"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "BHM",
+    "fields": {
+        "title": "Birmingham, AL",
+        "timezone": "America/Chicago",
+        "latitude": 33.56290054,
+        "longitude": -86.75350189,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Alabama"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "BNA",
+    "fields": {
+        "title": "Nashville, TN",
+        "timezone": "America/Chicago",
+        "latitude": 36.1245002746582,
+        "longitude": -86.6781997680664,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Tennessee"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "BOI",
+    "fields": {
+        "title": "Boise, ID",
+        "timezone": "America/Denver",
+        "latitude": 43.56439972,
+        "longitude": -116.22299960000001,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Idaho"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "BOS",
+    "fields": {
+        "title": "Boston Logan, MA",
+        "timezone": "America/New_York",
+        "latitude": 42.36429977,
+        "longitude": -71.00520325,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Massachusetts"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "BUF",
+    "fields": {
+        "title": "Buffalo/Niagara, NY",
+        "timezone": "America/New_York",
+        "latitude": 42.94049835,
+        "longitude": -78.73220062,
+        "sw_airport": true,
+        "country": "us",
+        "state": "New York"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "BUR",
+    "fields": {
+        "title": "Burbank, CA",
+        "timezone": "America/Los_Angeles",
+        "latitude": 34.200698852539055,
+        "longitude": -118.35900115966795,
+        "sw_airport": true,
+        "country": "us",
+        "state": "California"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "BWI",
+    "fields": {
+        "title": "Baltimore/Washington, MD",
+        "timezone": "America/New_York",
+        "latitude": 39.17539978,
+        "longitude": -76.66829681,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Maryland"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "BZE",
+    "fields": {
+        "title": "Belize City, Belize",
+        "timezone": "America/Belize",
+        "latitude": 17.539100646972653,
+        "longitude": -88.30819702148438,
+        "sw_airport": true,
+        "country": "bz",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "CHS",
+    "fields": {
+        "title": "Charleston, SC",
+        "timezone": "America/New_York",
+        "latitude": 32.89860153,
+        "longitude": -80.04049683,
+        "sw_airport": true,
+        "country": "us",
+        "state": "South Carolina"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "CLE",
+    "fields": {
+        "title": "Cleveland, OH",
+        "timezone": "America/New_York",
+        "latitude": 41.411701202399996,
+        "longitude": -81.8498001099,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Ohio"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "CLT",
+    "fields": {
+        "title": "Charlotte, NC",
+        "timezone": "America/New_York",
+        "latitude": 35.2140007019043,
+        "longitude": -80.94309997558594,
+        "sw_airport": true,
+        "country": "us",
+        "state": "North Carolina"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "CMH",
+    "fields": {
+        "title": "Columbus, OH",
+        "timezone": "America/New_York",
+        "latitude": 39.99800109863281,
+        "longitude": -82.89189910888672,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Ohio"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "CRP",
+    "fields": {
+        "title": "Corpus Christi, TX",
+        "timezone": "America/Chicago",
+        "latitude": 27.77039909362793,
+        "longitude": -97.5011978149414,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Texas"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "CUN",
+    "fields": {
+        "title": "Cancun, Mexico",
+        "timezone": "America/Cancun",
+        "latitude": 21.036500930800003,
+        "longitude": -86.8770980835,
+        "sw_airport": true,
+        "country": "mx",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "CVG",
+    "fields": {
+        "title": "Cincinnati, OH",
+        "timezone": "America/New_York",
+        "latitude": 39.0488014221,
+        "longitude": -84.6678009033,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Kentucky"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "DAL",
+    "fields": {
+        "title": "Dallas (Love Field), TX",
+        "timezone": "America/Chicago",
+        "latitude": 32.84709930419922,
+        "longitude": -96.85179901123048,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Texas"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "DCA",
+    "fields": {
+        "title": "Washington (Reagan National), DC",
+        "timezone": "America/New_York",
+        "latitude": 38.8521,
+        "longitude": -77.037697,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Virginia"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "DEN",
+    "fields": {
+        "title": "Denver, CO",
+        "timezone": "America/Denver",
+        "latitude": 39.861698150635,
+        "longitude": -104.672996521,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Colorado"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "DSM",
+    "fields": {
+        "title": "Des Moines, IA",
+        "timezone": "America/Chicago",
+        "latitude": 41.53400039672852,
+        "longitude": -93.66310119628906,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Iowa"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "DTW",
+    "fields": {
+        "title": "Detroit, MI",
+        "timezone": "America/New_York",
+        "latitude": 42.212398529052734,
+        "longitude": -83.35340118408203,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Michigan"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "ECP",
+    "fields": {
+        "title": "Panama City Beach, FL",
+        "timezone": "America/Chicago",
+        "latitude": 30.357105999999998,
+        "longitude": -85.79541400000001,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Florida"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "ELP",
+    "fields": {
+        "title": "El Paso, TX",
+        "timezone": "America/Denver",
+        "latitude": 31.80719948,
+        "longitude": -106.37799840000002,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Texas"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "EWR",
+    "fields": {
+        "title": "New York/Newark, NJ",
+        "timezone": "America/New_York",
+        "latitude": 40.69250106811523,
+        "longitude": -74.168701171875,
+        "sw_airport": true,
+        "country": "us",
+        "state": "New Jersey"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "FLL",
+    "fields": {
+        "title": "Ft. Lauderdale, FL",
+        "timezone": "America/New_York",
+        "latitude": 26.072599411010746,
+        "longitude": -80.15270233154297,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Florida"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "FNT",
+    "fields": {
+        "title": "Flint, MI",
+        "timezone": "America/New_York",
+        "latitude": 42.96540069580078,
+        "longitude": -83.74359893798828,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Michigan"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "GCM",
+    "fields": {
+        "title": "Grand Cayman, Cayman Islands",
+        "timezone": "America/Cayman",
+        "latitude": 19.292800903299998,
+        "longitude": -81.3576965332,
+        "sw_airport": true,
+        "country": "ky",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "GEG",
+    "fields": {
+        "title": "Spokane, WA",
+        "timezone": "America/Los_Angeles",
+        "latitude": 47.61989974975586,
+        "longitude": -117.53399658203124,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Washington"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "GRR",
+    "fields": {
+        "title": "Grand Rapids, MI",
+        "timezone": "America/New_York",
+        "latitude": 42.88079834,
+        "longitude": -85.52279663,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Michigan"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "GSP",
+    "fields": {
+        "title": "Greenville/Spartanburg, SC",
+        "timezone": "America/New_York",
+        "latitude": 34.895698547399995,
+        "longitude": -82.2189025879,
+        "sw_airport": true,
+        "country": "us",
+        "state": "South Carolina"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "HAV",
+    "fields": {
+        "title": "Havana, Cuba",
+        "timezone": "America/Havana",
+        "latitude": 22.989200592041016,
+        "longitude": -82.40910339355469,
+        "sw_airport": true,
+        "country": "cu",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "HOU",
+    "fields": {
+        "title": "Houston (Hobby), TX",
+        "timezone": "America/Chicago",
+        "latitude": 29.64539909,
+        "longitude": -95.27890015,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Texas"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "HRL",
+    "fields": {
+        "title": "Harlingen, TX",
+        "timezone": "America/Chicago",
+        "latitude": 26.228500366210934,
+        "longitude": -97.65440368652344,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Texas"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "IAD",
+    "fields": {
+        "title": "Washington (Dulles), DC",
+        "timezone": "America/New_York",
+        "latitude": 38.94449997,
+        "longitude": -77.45580292,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Virginia"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "ICT",
+    "fields": {
+        "title": "Wichita, KS",
+        "timezone": "America/Chicago",
+        "latitude": 37.649898529052734,
+        "longitude": -97.43309783935548,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Kansas"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "IND",
+    "fields": {
+        "title": "Indianapolis, IN",
+        "timezone": "America/New_York",
+        "latitude": 39.7173,
+        "longitude": -86.294403,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Indiana"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "ISP",
+    "fields": {
+        "title": "Long Island/Islip, NY",
+        "timezone": "America/New_York",
+        "latitude": 40.79520035,
+        "longitude": -73.10019684,
+        "sw_airport": true,
+        "country": "us",
+        "state": "New York"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "JAX",
+    "fields": {
+        "title": "Jacksonville, FL",
+        "timezone": "America/New_York",
+        "latitude": 30.49410057067871,
+        "longitude": -81.68789672851562,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Florida"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "LAS",
+    "fields": {
+        "title": "Las Vegas, NV",
+        "timezone": "America/Los_Angeles",
+        "latitude": 36.08010101,
+        "longitude": -115.15200039999999,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Nevada"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "LAX",
+    "fields": {
+        "title": "Los Angeles, CA",
+        "timezone": "America/Los_Angeles",
+        "latitude": 33.94250107,
+        "longitude": -118.40799709999999,
+        "sw_airport": true,
+        "country": "us",
+        "state": "California"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "LBB",
+    "fields": {
+        "title": "Lubbock, TX",
+        "timezone": "America/Chicago",
+        "latitude": 33.66360092163086,
+        "longitude": -101.822998046875,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Texas"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "LGA",
+    "fields": {
+        "title": "New York (LaGuardia), NY",
+        "timezone": "America/New_York",
+        "latitude": 40.77719879,
+        "longitude": -73.87259674,
+        "sw_airport": true,
+        "country": "us",
+        "state": "New York"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "LGB",
+    "fields": {
+        "title": "Long Beach, CA",
+        "timezone": "America/Los_Angeles",
+        "latitude": 33.81769943,
+        "longitude": -118.15200039999999,
+        "sw_airport": true,
+        "country": "us",
+        "state": "California"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "LIR",
+    "fields": {
+        "title": "Liberia, Costa Rica",
+        "timezone": "America/Costa_Rica",
+        "latitude": 10.593299865722656,
+        "longitude": -85.54440307617188,
+        "sw_airport": true,
+        "country": "cr",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "LIT",
+    "fields": {
+        "title": "Little Rock, AR",
+        "timezone": "America/Chicago",
+        "latitude": 34.729400634799994,
+        "longitude": -92.22429656979999,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Arkansas"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "MAF",
+    "fields": {
+        "title": "Midland/Odessa, TX",
+        "timezone": "America/Chicago",
+        "latitude": 31.9424991607666,
+        "longitude": -102.2020034790039,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Texas"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "MBJ",
+    "fields": {
+        "title": "Montego Bay, Jamaica",
+        "timezone": "America/Jamaica",
+        "latitude": 18.503700256347656,
+        "longitude": -77.91339874267578,
+        "sw_airport": true,
+        "country": "jm",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "MCI",
+    "fields": {
+        "title": "Kansas City, MO",
+        "timezone": "America/Chicago",
+        "latitude": 39.2976,
+        "longitude": -94.713898,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Missouri"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "MCO",
+    "fields": {
+        "title": "Orlando, FL",
+        "timezone": "America/New_York",
+        "latitude": 28.429399490356445,
+        "longitude": -81.30899810791016,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Florida"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "MDW",
+    "fields": {
+        "title": "Chicago (Midway), IL",
+        "timezone": "America/Chicago",
+        "latitude": 41.7859992980957,
+        "longitude": -87.75240325927734,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Illinois"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "MEM",
+    "fields": {
+        "title": "Memphis, TN",
+        "timezone": "America/Chicago",
+        "latitude": 35.04240036010742,
+        "longitude": -89.97669982910156,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Tennessee"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "MEX",
+    "fields": {
+        "title": "Mexico City, Mexico",
+        "timezone": "America/Mexico_City",
+        "latitude": 19.4363,
+        "longitude": -99.072098,
+        "sw_airport": true,
+        "country": "mx",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "MHT",
+    "fields": {
+        "title": "Manchester, NH",
+        "timezone": "America/New_York",
+        "latitude": 42.93259811401367,
+        "longitude": -71.43569946289062,
+        "sw_airport": true,
+        "country": "us",
+        "state": "New Hampshire"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "MKE",
+    "fields": {
+        "title": "Milwaukee, WI",
+        "timezone": "America/Chicago",
+        "latitude": 42.94720077514648,
+        "longitude": -87.89659881591797,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Wisconsin"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "MSP",
+    "fields": {
+        "title": "Minneapolis/St. Paul (Terminal 2), MN",
+        "timezone": "America/Chicago",
+        "latitude": 44.8819999695,
+        "longitude": -93.22180175780001,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Minnesota"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "MSY",
+    "fields": {
+        "title": "New Orleans, LA",
+        "timezone": "America/Chicago",
+        "latitude": 29.99340057373047,
+        "longitude": -90.25800323486328,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Louisiana"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "NAS",
+    "fields": {
+        "title": "Nassau, Bahamas",
+        "timezone": "America/Nassau",
+        "latitude": 25.0389995575,
+        "longitude": -77.46620178219999,
+        "sw_airport": true,
+        "country": "bs",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "OAK",
+    "fields": {
+        "title": "Oakland, CA",
+        "timezone": "America/Los_Angeles",
+        "latitude": 37.72129821777344,
+        "longitude": -122.22100067138672,
+        "sw_airport": true,
+        "country": "us",
+        "state": "California"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "OKC",
+    "fields": {
+        "title": "Oklahoma City, OK",
+        "timezone": "America/Chicago",
+        "latitude": 35.39310073852539,
+        "longitude": -97.60070037841795,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Oklahoma"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "OMA",
+    "fields": {
+        "title": "Omaha, NE",
+        "timezone": "America/Chicago",
+        "latitude": 41.303199768066406,
+        "longitude": -95.89409637451172,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Nebraska"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "ONT",
+    "fields": {
+        "title": "Ontario/LA, CA",
+        "timezone": "America/Los_Angeles",
+        "latitude": 34.05599975585937,
+        "longitude": -117.60099792480469,
+        "sw_airport": true,
+        "country": "us",
+        "state": "California"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "ORF",
+    "fields": {
+        "title": "Norfolk, VA",
+        "timezone": "America/New_York",
+        "latitude": 36.89459991455078,
+        "longitude": -76.20120239257812,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Virginia"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "PBI",
+    "fields": {
+        "title": "West Palm Beach, FL",
+        "timezone": "America/New_York",
+        "latitude": 26.68320083618164,
+        "longitude": -80.09559631347656,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Florida"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "PDX",
+    "fields": {
+        "title": "Portland, OR",
+        "timezone": "America/Los_Angeles",
+        "latitude": 45.58869934,
+        "longitude": -122.59799960000001,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Oregon"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "PHL",
+    "fields": {
+        "title": "Philadelphia, PA",
+        "timezone": "America/New_York",
+        "latitude": 39.87189865112305,
+        "longitude": -75.24109649658203,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Pennsylvania"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "PHX",
+    "fields": {
+        "title": "Phoenix, AZ",
+        "timezone": "America/Phoenix",
+        "latitude": 33.43429946899414,
+        "longitude": -112.01200103759766,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Arizona"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "PIT",
+    "fields": {
+        "title": "Pittsburgh, PA",
+        "timezone": "America/New_York",
+        "latitude": 40.49150085,
+        "longitude": -80.23290253,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Pennsylvania"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "PLS",
+    "fields": {
+        "title": "Providenciales, Turks and Caicos",
+        "timezone": "America/Grand_Turk",
+        "latitude": 21.77359962463379,
+        "longitude": -72.26589965820312,
+        "sw_airport": true,
+        "country": "tc",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "PNS",
+    "fields": {
+        "title": "Pensacola, FL",
+        "timezone": "America/Chicago",
+        "latitude": 30.473400115967003,
+        "longitude": -87.18659973144501,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Florida"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "PUJ",
+    "fields": {
+        "title": "Punta Cana, DO",
+        "timezone": "America/Santo_Domingo",
+        "latitude": 18.567399978599997,
+        "longitude": -68.36340332030001,
+        "sw_airport": true,
+        "country": "do",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "PVD",
+    "fields": {
+        "title": "Providence, RI",
+        "timezone": "America/New_York",
+        "latitude": 41.73260116577149,
+        "longitude": -71.42040252685547,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Rhode Island"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "PVR",
+    "fields": {
+        "title": "Puerto Vallarta, MX",
+        "timezone": "America/Mexico_City",
+        "latitude": 20.680099487304688,
+        "longitude": -105.25399780273438,
+        "sw_airport": true,
+        "country": "mx",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "PWM",
+    "fields": {
+        "title": "Portland, ME",
+        "timezone": "America/New_York",
+        "latitude": 43.64619827,
+        "longitude": -70.30930328,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Maine"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "RDU",
+    "fields": {
+        "title": "Raleigh/Durham, NC",
+        "timezone": "America/New_York",
+        "latitude": 35.877601623535156,
+        "longitude": -78.7874984741211,
+        "sw_airport": true,
+        "country": "us",
+        "state": "North Carolina"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "RIC",
+    "fields": {
+        "title": "Richmond, VA",
+        "timezone": "America/New_York",
+        "latitude": 37.50519943237305,
+        "longitude": -77.3197021484375,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Virginia"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "RNO",
+    "fields": {
+        "title": "Reno/Tahoe, NV",
+        "timezone": "America/Los_Angeles",
+        "latitude": 39.49909973144531,
+        "longitude": -119.76799774169922,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Nevada"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "ROC",
+    "fields": {
+        "title": "Rochester, NY",
+        "timezone": "America/New_York",
+        "latitude": 43.118900299072266,
+        "longitude": -77.67240142822266,
+        "sw_airport": true,
+        "country": "us",
+        "state": "New York"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "RSW",
+    "fields": {
+        "title": "Ft. Myers, FL",
+        "timezone": "America/New_York",
+        "latitude": 26.53619956970215,
+        "longitude": -81.75520324707031,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Florida"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "SAN",
+    "fields": {
+        "title": "San Diego, CA",
+        "timezone": "America/Los_Angeles",
+        "latitude": 32.7336006165,
+        "longitude": -117.190002441,
+        "sw_airport": true,
+        "country": "us",
+        "state": "California"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "SAT",
+    "fields": {
+        "title": "San Antonio, TX",
+        "timezone": "America/Chicago",
+        "latitude": 29.533700942993164,
+        "longitude": -98.46980285644531,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Texas"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "SDF",
+    "fields": {
+        "title": "Louisville, KY",
+        "timezone": "America/New_York",
+        "latitude": 38.1744,
+        "longitude": -85.736,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Kentucky"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "SEA",
+    "fields": {
+        "title": "Seattle/Tacoma, WA",
+        "timezone": "America/Los_Angeles",
+        "latitude": 47.44900131225586,
+        "longitude": -122.30899810791016,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Washington"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "SFO",
+    "fields": {
+        "title": "San Francisco, CA",
+        "timezone": "America/Los_Angeles",
+        "latitude": 37.61899948120117,
+        "longitude": -122.375,
+        "sw_airport": true,
+        "country": "us",
+        "state": "California"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "SJC",
+    "fields": {
+        "title": "San Jose, CA",
+        "timezone": "America/Los_Angeles",
+        "latitude": 37.36259841918945,
+        "longitude": -121.9290008544922,
+        "sw_airport": true,
+        "country": "us",
+        "state": "California"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "SJD",
+    "fields": {
+        "title": "Cabo San Lucas/Los Cabos, MX",
+        "timezone": "America/Mazatlan",
+        "latitude": 23.15180015563965,
+        "longitude": -109.72100067138672,
+        "sw_airport": true,
+        "country": "mx",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "SJO",
+    "fields": {
+        "title": "San Jose, Costa Rica",
+        "timezone": "America/Costa_Rica",
+        "latitude": 9.993860244750977,
+        "longitude": -84.20880126953125,
+        "sw_airport": true,
+        "country": "cr",
+        "state": ""
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "SJU",
+    "fields": {
+        "title": "San Juan, PR",
+        "timezone": "America/Puerto_Rico",
+        "latitude": 18.4393997192,
+        "longitude": -66.0018005371,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Puerto Rico"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "SLC",
+    "fields": {
+        "title": "Salt Lake City, UT",
+        "timezone": "America/Denver",
+        "latitude": 40.78839874267578,
+        "longitude": -111.97799682617188,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Utah"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "SMF",
+    "fields": {
+        "title": "Sacramento, CA",
+        "timezone": "America/Los_Angeles",
+        "latitude": 38.69540023803711,
+        "longitude": -121.59100341796876,
+        "sw_airport": true,
+        "country": "us",
+        "state": "California"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "SNA",
+    "fields": {
+        "title": "Orange County/Santa Ana, CA",
+        "timezone": "America/Los_Angeles",
+        "latitude": 33.67570114,
+        "longitude": -117.86799620000001,
+        "sw_airport": true,
+        "country": "us",
+        "state": "California"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "STL",
+    "fields": {
+        "title": "St. Louis, MO",
+        "timezone": "America/Chicago",
+        "latitude": 38.74869918823242,
+        "longitude": -90.37000274658205,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Missouri"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "TPA",
+    "fields": {
+        "title": "Tampa, FL",
+        "timezone": "America/New_York",
+        "latitude": 27.975500106811523,
+        "longitude": -82.533203125,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Florida"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "TUL",
+    "fields": {
+        "title": "Tulsa, OK",
+        "timezone": "America/Chicago",
+        "latitude": 36.19839859008789,
+        "longitude": -95.88809967041016,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Oklahoma"
+    }
+}, {
+    "model": "query_flight.airport",
+    "pk": "TUS",
+    "fields": {
+        "title": "Tucson, AZ",
+        "timezone": "America/Phoenix",
+        "latitude": 32.116100311279304,
+        "longitude": -110.94100189208984,
+        "sw_airport": true,
+        "country": "us",
+        "state": "Arizona"
+    }
+}]
