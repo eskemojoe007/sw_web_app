@@ -29,9 +29,6 @@ def search(request):
             destinationAirportCode = form.cleaned_data['destination_airport'].values_list('abrev', flat=True)
             departureDate = form.cleaned_data['depart_date'].strftime('%Y-%m-%d')
             # returnDate = form.cleaned_data['return_date'].strftime('%Y-%m-%d')
-            return HttpResponse('You searched for:\n Origin: {}\n Destination:{}\nDate:{}'.format(
-                originationAirportCode,destinationAirportCode,departureDate
-            ))
 
             sw = SW_Sel_Multiple(departureDate=departureDate,
                 destinationAirportCode=destinationAirportCode,

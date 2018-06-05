@@ -36,8 +36,16 @@ class SW_Sel_base(object):
 
     def create_browser(self):
         chrome_options = Options()
+
+        if os.environ.get('GOOGLE_CHROME_BIN'):
+            chrome_options.binary_location = os.environ.get('GOOGLE_CHROME_BIN')
+
         chrome_options.set_headless(True)
-        chrome_driver = os.path.join('query_flight','static','query_flight',"chromedriver.exe")
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+        chrome_driver = os.environ.get('CHROMEDRIVER_PATH',
+            os.path.join('query_flight','static','query_flight',"chromedriver.exe"))
+        # chrome_driver = os.path.join('query_flight','static','query_flight',"chromedriver.exe")
         return webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
 
     def create_search(self):
