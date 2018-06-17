@@ -5,36 +5,40 @@ from query_flight.serializers import SearchPostSerializer
 from django.utils import timezone
 from query_flight.models import Airport, Flight, Layover, Search
 
+
 @pytest.fixture
 def search_url():
     return reverse('query_flight:search-post')
 
-@pytest.fixture
-def basic_search(boi_airport,atl_airport):
-    return {'destinationAirportCode':'BOI',
-        'originationAirportCode':'ATL',
-        'departureDate':timezone.now().date() + timezone.timedelta(days=5),
-        'returnDate':timezone.now().date() + timezone.timedelta(days=10),
-        }
 
-def test_get(apiclient,search_url):
+@pytest.fixture
+def basic_search(boi_airport, atl_airport):
+    return {'destinationAirportCode': 'BOI',
+            'originationAirportCode': 'ATL',
+            'departureDate': timezone.now().date() + timezone.timedelta(days=5),
+            'returnDate': timezone.now().date() + timezone.timedelta(days=10),
+            }
+
+
+def test_get(apiclient, search_url):
     response = apiclient.get(search_url)
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
+
 @pytest.mark.django_db
-@pytest.mark.parametrize('kwargs,error',[
-    ({'destinationAirportCode':'boi'},False),
-    ({'destinationAirportCode':'BOI'},False),
-    ({'destinationAirportCode':'AtL'},False),
-    ({'destinationAirportCode':'aTL'},False),
-    ({'destinationAirportCode':'bbb'},True),
-    ({'originationAirportCode':'boi'},False),
-    ({'originationAirportCode':'BOI'},False),
-    ({'originationAirportCode':'AtL'},False),
-    ({'originationAirportCode':'aTL'},False),
-    ({'originationAirportCode':'bbb'},True),
-    ({'departureDate':timezone.now().date() - timezone.timedelta(days=5)},True),
-    ({'departureDate':timezone.now().date() + timezone.timedelta(days=5)},False),
+@pytest.mark.parametrize('kwargs,error', [
+    ({'destinationAirportCode': 'boi'}, False),
+    ({'destinationAirportCode': 'BOI'}, False),
+    ({'destinationAirportCode': 'AtL'}, False),
+    ({'destinationAirportCode': 'aTL'}, False),
+    ({'destinationAirportCode': 'bbb'}, True),
+    ({'originationAirportCode': 'boi'}, False),
+    ({'originationAirportCode': 'BOI'}, False),
+    ({'originationAirportCode': 'AtL'}, False),
+    ({'originationAirportCode': 'aTL'}, False),
+    ({'originationAirportCode': 'bbb'}, True),
+    ({'departureDate': timezone.now().date() - timezone.timedelta(days=5)}, True),
+    ({'departureDate': timezone.now().date() + timezone.timedelta(days=5)}, False),
     # ({'returnDate':timezone.now().date() + timezone.timedelta(days=100)},False),
     # ({'returnDate':timezone.now().date() - timezone.timedelta(days=100)},True),
     # ({'departureDate':timezone.now().date() + timezone.timedelta(days=5),
@@ -42,7 +46,7 @@ def test_get(apiclient,search_url):
     # ({'departureDate':timezone.now().date() + timezone.timedelta(days=5),
     #   'returnDate':timezone.now().date() + timezone.timedelta(days=7)},False),
 ])
-def test_validators_no_post(basic_search,kwargs,error):
+def test_validators_no_post(basic_search, kwargs, error):
     basic_search.update(kwargs)
 
     s = SearchPostSerializer(data=basic_search)

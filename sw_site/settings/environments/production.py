@@ -1,6 +1,7 @@
-from sw_site.settings.components.common import MIDDLEWARE
+# from sw_site.settings.components.common import MIDDLEWARE
 from sw_site.settings.components import BASE_DIR
 import django_heroku
+import os
 
 # SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!

@@ -10,7 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
-from sw_site.settings.components import BASE_DIR, config
+# from sw_site.settings.components import BASE_DIR, config
+from sw_site.settings.components import BASE_DIR
 import os
 
 # Quick-start development settings - unsuitable for production
@@ -50,7 +51,7 @@ ROOT_URLCONF = 'sw_site.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

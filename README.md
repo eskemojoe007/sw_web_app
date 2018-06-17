@@ -13,7 +13,7 @@ I use `pipenv` for everything.  To install follow these steps:
 4. In the repository run `pipenv install --dev`
 
 ### Launching the server
-within the `sw_site` folder run `pipenv run python manage.py runserver` 
+run `pipenv run python manage.py runserver`
 
 ### Running all the tests
-within the `sw_site` folder run `pipenv run python -m pytest` 
+run `pipenv run python -m pytest`
