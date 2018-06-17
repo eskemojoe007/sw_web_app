@@ -23,10 +23,17 @@ jobs:
             sudo pip install pipenv
             pipenv install --dev
       - run:
-          name: install npm dependencies
+          name: install npm
           command: |
             curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
             sudo apt-get install -y nodejs
+
+      - restore_cache:
+          key: deps8-{{ .Branch }}-{{ checksum "frontend/package-lock.json" }}
+      - run:
+          name: install npm dependencies
+          command: |
+
             cd frontend
             sudo npm install --dev
             cd ..
@@ -36,11 +43,16 @@ jobs:
             - ".venv"
             - "/usr/local/bin"
             - "/usr/local/lib/python3.6/site-packages"
+      - save_cache:
+          key: deps8-{{ .Branch }}-{{ checksum "frontend/package-lock.json" }}
+          paths:
+            - "frontend/node_modules"
       - run:
           name: run django tests
           command: |
             mkdir test-reports
             pipenv run "python -m pytest --junitxml=test-reports/junit.xml"
+      - run:
           name: run vue tests
           command: |
             cd frontend
