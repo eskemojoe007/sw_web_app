@@ -1,6 +1,7 @@
 <template lang="html">
   <div>
     <h1>How does this work?</h1>
+    <!-- TODO This doesn't quite work like we'd like -->
     <input type="number" name="search ID" value=""
            v-model="searchID"
            @change="fetchFlights(searchID)"
