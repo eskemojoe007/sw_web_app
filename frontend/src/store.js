@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import axios from 'axios';
 
 Vue.use(Vuex);
 
@@ -42,7 +41,7 @@ export default new Vuex.Store({
   actions: {
     fetchFlights({ commit }, payload) {
       commit('onLoading');
-      axios.get(`http://localhost:8000/query_flight/searchs/${payload}/`)
+      Vue.axios.get(`http://localhost:8000/query_flight/searchs/${payload}/`)
         .then((response) => {
           commit('FETCH_FLIGHTS', response.data.flight_set);
           commit('offLoading');

@@ -1,5 +1,6 @@
 import '@babel/polyfill'
 import Vue from 'vue';
+import './plugins/axios'
 import './plugins/vuetify'
 // import axios from 'axios';
 // import VueAxios from 'vue-axios';
