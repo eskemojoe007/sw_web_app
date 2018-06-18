@@ -12,6 +12,13 @@ DEBUG = False
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+CORS_ORIGIN_WHITELIST = (
+    'localhost:8000',
+    '127.0.0.1:8000',
+    'localhost:8080',
+    '127.0.0.1:8080',
+)
+
 # MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware'] + MIDDLEWARE
 #
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

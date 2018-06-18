@@ -17,10 +17,12 @@ import os
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','testserver']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'fx)pch!nnzo-5ng@q04fi6v0c0h&q#&^1$tf(@zdy%618tdeor')
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'fx)pch!nnzo-5ng@q04fi6v0c0h&q#&^1$tf(@zdy%618tdeor')
 
 # Application definition
 
@@ -34,11 +36,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
