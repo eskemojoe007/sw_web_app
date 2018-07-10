@@ -4,11 +4,21 @@
     <v-autocomplete
       v-model="origin"
       :items="airports"
-      hint="departure Airport"
-      label="Select"
+      label="Select Departure Airports"
       multiple
-      box
+      clearable
+      chips
+      solo
     >
+      <template slot="selection" slot-scope="data">
+        <v-chip
+          close
+          :selected="data.seclected"
+          @input="data.parent.selectItem(data.item)"
+        >
+          {{data.item}}
+        </v-chip>
+      </template>
 
     </v-autocomplete>
 
