@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 import About from './views/About.vue';
+import Search from './views/Search.vue';
 import BasicFlightList from './components/BasicFlightList.vue';
 
 Vue.use(Router);
@@ -26,7 +27,7 @@ export default new Router({
     {
       path: '/search',
       name: 'search',
-      // component: NotDone,
+      component: Search,
     },
     {
       path: '/bug',

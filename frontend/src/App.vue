@@ -71,6 +71,7 @@
 <script>
 import HelloWorld from './components/HelloWorld.vue';
 import BasicFlightList from './components/BasicFlightList.vue';
+import SearchForm from './components/SearchForm.vue';
 
 export default {
   name: 'App',
