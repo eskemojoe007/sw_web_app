@@ -4,22 +4,32 @@
     <v-autocomplete
       v-model="origin"
       :items="airports"
+      item-text="name"
+      item-value="abrev"
       label="Select Departure Airports"
+      chips
       multiple
       clearable
-      chips
-      solo
     >
       <template slot="selection" slot-scope="data">
         <v-chip
           close
           :selected="data.seclected"
           @input="data.parent.selectItem(data.item)"
+          class="chip--select-multi"
         >
-          {{data.item}}
+          {{ data.item.abrev }}
         </v-chip>
-      </template>
 
+      </template>
+      <template slot="no-data">
+        <v-list-tile>
+          <v-list-tile-title>
+            Search for your needed SW
+            <strong>Airport</strong>
+          </v-list-tile-title>
+        </v-list-tile>
+      </template>
     </v-autocomplete>
 
   </div>
@@ -30,7 +40,13 @@
 export default {
   data() {
     return {
-      airports: ['ATL', 'GSP', 'CLT', 'AUS', 'DAL'],
+      airports: [
+        { abrev: 'ATL', name: 'Atlanta - ATL' },
+        { abrev: 'GSP', name: 'Greenville - GSP' },
+        { abrev: 'CLT', name: 'Charlotte - CLT' },
+        { abrev: 'AUS', name: 'Austin - AUS' },
+        { abrev: 'DAL', name: 'Dallas - DAL' },
+      ],
       origin: null,
 
     };
