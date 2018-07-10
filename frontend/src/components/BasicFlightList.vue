@@ -14,10 +14,10 @@
       class="elevation-1"
     >
       <template slot="items" slot-scope="props">
-        <td class="text-xs-right">{{ props.item.origin_airport }}</td>
-        <td class="text-xs-right">{{ props.item.destination_airport }}</td>
-        <td class="text-xs-right">{{ props.item.min_price }}</td>
-        <td class="text-xs-right">{{ props.item.travel_time }}</td>
+        <td>{{ props.item.origin_airport }}</td>
+        <td>{{ props.item.destination_airport }}</td>
+        <td>{{ props.item.min_price }}</td>
+        <td>{{ props.item.travel_time }}</td>
       </template>
     </v-data-table>
     <!-- <ul v-if="sortFlightsNum > 0 && !loading">
@@ -52,7 +52,7 @@ export default {
   computed: {
     ...mapGetters([
       'sortFlights',
-      'sortFlightsNum',
+      'filterFlightsNum',
     ]),
     ...mapState([
       'loading',

@@ -69,16 +69,17 @@
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
-import BasicFlightList from './components/BasicFlightList.vue';
-import SearchForm from './components/SearchForm.vue';
+// import HelloWorld from './components/HelloWorld.vue';
+// import BasicFlightList from './components/BasicFlightList.vue';
+// import SearchForm from './components/SearchForm.vue';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld,
-    BasicFlightList,
-  },
+  // components: {
+  //   HelloWorld,
+  //   BasicFlightList,
+  // },
   data() {
     return {
       clipped: true,
@@ -121,6 +122,14 @@ export default {
       miniVariant: false,
       title: 'SW Searcher',
     };
+  },
+  methods: {
+    ...mapActions([
+      'fetchAirports',
+    ]),
+  },
+  created() {
+    this.fetchAirports();
   },
 };
 </script>

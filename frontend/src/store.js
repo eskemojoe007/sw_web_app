@@ -3,7 +3,8 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+
+const flights = {
   state: {
     flights: [],
     loading: false,
@@ -17,8 +18,8 @@ export default new Vuex.Store({
     sortFlights(state, getters) {
       return getters.filterNull.sort((a, b) => a.min_price - b.min_price);
     },
-    sortFlightsNum(state, getters) {
-      return getters.sortFlights.length;
+    filterFlightsNum(state, getters) {
+      return getters.filterNull.length;
     },
   },
 
@@ -51,5 +52,61 @@ export default new Vuex.Store({
           commit('offLoading');
         });
     },
+  },
+};
+
+const airports = {
+  state: {
+    airports: [],
+    loading: false,
+  },
+
+  getters: {
+    filterSW(state) {
+      return state.airports.filter(airport => !!airport.sw_airport)
+    },
+    getLenAirports(state, getters) {
+      return getters.filterSW.length;
+    },
+    getParsableAirports(state, getters) {
+      return getters.filterSW.map(airport =>
+        ({ abrev: airport.abrev, name: `${airport.title} - ${airport.abrev}` }));
+    },
+  },
+  mutations: {
+    FETCH_AIRPORTS(state, airports) {
+      state.airports = airports;
+    },
+
+    toggleLoading(state) {
+      state.loading = !state.loading;
+    },
+    offLoading(state) {
+      state.loading = false;
+    },
+    onLoading(state) {
+      state.loading = true;
+    },
+  },
+  actions: {
+    fetchAirports({ commit }, payload) {
+      commit('onLoading');
+      Vue.axios.get(`http://localhost:8000/query_flight/airports/`)
+        .then((response) => {
+          commit('FETCH_AIRPORTS', response.data);
+          commit('offLoading');
+        })
+        .catch((err) => {
+          console.log(err);
+          commit('offLoading');
+        });
+    },
+  },
+};
+
+export default new Vuex.Store({
+  modules: {
+    flights,
+    airports,
   },
 });

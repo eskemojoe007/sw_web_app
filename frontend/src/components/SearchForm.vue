@@ -3,7 +3,7 @@
     <h1>Search Form</h1>
     <v-autocomplete
       v-model="origin"
-      :items="airports"
+      :items="getParsableAirports"
       item-text="name"
       item-value="abrev"
       label="Select Departure Airports"
@@ -14,7 +14,6 @@
       <template slot="selection" slot-scope="data">
         <v-chip
           close
-          :selected="data.seclected"
           @input="data.parent.selectItem(data.item)"
           class="chip--select-multi"
         >
@@ -37,19 +36,32 @@
 </template>
 
 <script>
+import { mapGetters, mapActions, mapState } from 'vuex';
+
 export default {
   data() {
     return {
-      airports: [
-        { abrev: 'ATL', name: 'Atlanta - ATL' },
-        { abrev: 'GSP', name: 'Greenville - GSP' },
-        { abrev: 'CLT', name: 'Charlotte - CLT' },
-        { abrev: 'AUS', name: 'Austin - AUS' },
-        { abrev: 'DAL', name: 'Dallas - DAL' },
-      ],
       origin: null,
-
     };
+  },
+  computed: {
+    ...mapGetters([
+      'getLenAirports',
+      'getParsableAirports',
+    ]),
+    ...mapState([
+      'loading',
+    ]),
+  },
+  methods: {
+    ...mapActions([
+      'fetchAirports',
+    ]),
+  },
+  mounted() {
+    if (this.getLenAirports <= 0 && !this.loading) {
+      this.fetchAirports();
+    }
   },
 };
 </script>
