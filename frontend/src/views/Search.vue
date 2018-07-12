@@ -5,7 +5,9 @@
 </template>
 
 <script>
-import SearchForm from '@/components/SearchForm.vue'
+/* eslint-disable import/no-unresolved */
+import SearchForm from '@/components/SearchForm.vue';
+/* eslint-enable import/no-unresolved */
 
 export default {
   name: 'Home',

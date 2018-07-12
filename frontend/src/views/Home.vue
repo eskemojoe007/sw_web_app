@@ -6,7 +6,9 @@
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+/* eslint-disable import/no-unresolved */
+import HelloWorld from '@/components/HelloWorld.vue';
+/* eslint-enable import/no-unresolved */
 
 export default {
   name: 'Home',

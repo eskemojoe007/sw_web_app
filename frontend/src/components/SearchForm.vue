@@ -9,8 +9,10 @@
 </template>
 
 <script>
-import MultiDate from '@/components/MultiDate.vue'
-import AirportSelector from '@/components/AirportSelector.vue'
+/* eslint-disable import/no-unresolved */
+import MultiDate from '@/components/MultiDate.vue';
+import AirportSelector from '@/components/AirportSelector.vue';
+/* eslint-enable import/no-unresolved */
 
 export default {
   components: {
