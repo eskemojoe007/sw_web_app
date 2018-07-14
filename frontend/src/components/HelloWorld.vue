@@ -4,10 +4,10 @@
       <v-layout column align-center>
         <img src="@/assets/logo.png" alt="Vuetify.js" class="mb-5">
         <blockquote>
-          &#8220;First, solve the problem. Then, write the code.&#8221;
+          {{ msg }}
           <footer>
             <small>
-              <em>&mdash;John Johnson</em>
+              <em>{{ author }}</em>
             </small>
           </footer>
         </blockquote>
@@ -22,7 +22,11 @@ export default {
   props: {
     msg: {
       type: String,
-      default: 'Default Input',
+      default: '&#8220;First, solve the problem. Then, write the code.&#8221;',
+    },
+    author: {
+      type: String,
+      default: '&mdash;John Johnson',
     },
   },
 };
