@@ -74,10 +74,12 @@ export default {
     selectedAirports: {
       get() {
         let vals;
-        if (this.label.toUpperDCase() === 'ORIGIN') {
-          vals = this.$store.getters.cardById(this.id).origins;
-        } else if (this.label.toUpperDCase() === 'DESTINATION') {
-          vals = this.$store.getters.cardById(this.id).destinations;
+        if (this.label.toUpperCase() === 'ORIGIN') {
+          // vals = this.$store.getters.cardById(this.id).origins;
+          vals = this.$store.state.formDetails.cards[this.id].origins;
+        } else if (this.label.toUpperCase() === 'DESTINATION') {
+          // vals = this.$store.getters.cardById(this.id).destinations;
+          vals = this.$store.state.formDetails.cards[this.id].destinations;
         } else {
           vals = [];
           console.log('label must be ORIGIN or DESTINATION');
@@ -85,13 +87,17 @@ export default {
         return vals;
       },
       set(value) {
-        this.$store.dispatch()
+        this.setCardValues({ id: this.id, value})
+        // this.$store.commit('setCardValues', { id: this.id, value })
       },
     },
   },
   methods: {
     ...mapActions([
       'fetchAirports',
+    ]),
+    ...mapActions('formDetails', [
+      'setCardValues',
     ]),
   },
   mounted() {

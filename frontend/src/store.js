@@ -104,55 +104,77 @@ const airports = {
   },
 };
 
+const emptyCard = {
+  origins: [],
+  destinations: [],
+  dates: [],
+};
+
+// https://forum.vuejs.org/t/vuex-best-practices-for-complex-objects/10143
 const formDetails = {
   namespaced: true,
   state: {
-    cards: [
-      {
-        id: 1,
-        origins: [],
-        destinations: [],
-        dates: [],
-      },
-    ],
+    cards: {
+      1: emptyCard,
+    },
+    cardList: [1],
     // height: null,
   },
   getters: {
     numCards(state) {
-      return state.cards.length;
+      return state.cardList.length;
     },
     maxCardId(state) {
-      return Math.max(...state.cards.map(card => card.id));
+      return Math.max(...state.cardList)
+      // return Math.max(...state.cards.map(card => card.id));
     },
     hideOneCard(state, getters) {
       return getters.numCards === 1;
     },
-    cardById: (state) => (id) => {
-      return state.cards.find(card => card.id === id)
-    },
+    // cardById: (state) => (id) => {
+    //   return state.cards[id]
+    // },
     // cardById(state, id) {
     //   return state.cards.find(card => card.id === id);
     // },
   },
   mutations: {
-    addEmptyCard(state, card) {
-      state.cards.push(card);
+    addCardList(state, id) {
+      state.cardList.push(id);
     },
-    setInputVal(state, payload) {
-      const card = state.cards.find(obj => obj.id === payload.id);
-
+    addCardObj(state, payload) {
+      state.cards[payload.id] = payload.card;
     },
+    removeCardList(state, id) {
+      const index = state.cardList.findIndex(x => x === id);
+      if (!(index === -1)) {
+        state.cardList.splice(index, 1);
+      } else {
+        console.log('Tried to remove item that didnt exist');
+      }
+    },
+    removeCardObj(state, id) {
+      delete state.cards[id];
+    },
+    commitCardValues(state, payload) {
+      state.cards[payload.id] = payload.value;
+    },
+    // setInputVal(state, payload) {
+    //   const card = state.cards.find(obj => obj.id === payload.id);
+    // },
   },
   actions: {
     addEmptyCard({ commit, getters }) {
       const id = getters.maxCardId + 1;
-      const emptyCard = {
-        id,
-        origins: [],
-        destinations: [],
-        dates: [],
-      };
-      commit('addEmptyCard', emptyCard);
+      commit('addCardList', id);
+      commit('addCardObj', { id, card: emptyCard });
+    },
+    removeCard({ commit }, id) {
+      commit('removeCardList', id);
+      commit('removeCardObj', id);
+    },
+    setCardValues({ commit }, payload) {
+      commit('commitCardValues', payload);
     },
     // setValue({ commit, getters }, payload) {
     //   let card = getters.cardById(payload.id);

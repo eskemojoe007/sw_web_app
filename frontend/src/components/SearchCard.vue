@@ -57,6 +57,7 @@
           small
           color="red"
           v-if="!hideOneCard"
+          @click.native="removeCard(id)"
         >
           <v-icon>delete</v-icon>
         </v-btn>
@@ -113,7 +114,10 @@ export default {
     ]),
   },
   methods: {
-    ...mapActions('formDetails', ['addEmptyCard']),
+    ...mapActions('formDetails', [
+      'addEmptyCard',
+      'removeCard',
+    ]),
   },
 };
 </script>

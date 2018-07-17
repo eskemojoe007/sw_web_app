@@ -2,7 +2,7 @@
   <v-container>
     <h1>Enter Search</h1>
     <v-form ref="form" v-model="valid" lazy-validation>
-      <SearchCard v-for="card in cards" :key="card.id" :id="card.id"/>
+      <SearchCard v-for="id in cardList" :key="id" :id="id"/>
       <!-- <SearchCard/> -->
       <v-btn
         :disabled="!valid"
@@ -33,8 +33,8 @@ export default {
     SearchCard,
   },
   computed: {
-    ...mapState('formDetails', ['cards']),
-    ...mapGetters('formDetails', ['maxCardId']),
+    ...mapState('formDetails', ['cardList']),
+    // ...mapGetters('formDetails', ['maxCardId']),
   },
   methods: {
     submit() {
@@ -42,9 +42,8 @@ export default {
       console.log(this.$refs.form.validate());
     },
     clear() {
-      // this.numSearch = 1;
       this.$refs.form.reset();
-      // TODO: VUEX clear all the data
+      // TODO: Delete the cards we no longer need.
     },
   },
 };
