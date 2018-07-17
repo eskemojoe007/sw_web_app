@@ -15,10 +15,14 @@
       slot="activator"
       v-model="datesAll"
       label="Departure Dates"
-      prepend-icon="event"
+      prepend-inner-icon="event"
       multiple
       readonly
       clearable
+      box
+      ref='dateText'
+      required
+      :rules="datesAllRules"
     >
       <template
         slot='selection'
@@ -38,10 +42,12 @@
       @input="save(date)"
       :events="datesAll"
       event-color="blue lighten-1"
+      :min="minDate"
+      :max="maxDate"
     >
       <v-spacer/>
       <v-btn
-        flat color="primary"
+        color="primary"
         @click="menu = false"
       >
         OK
@@ -58,7 +64,29 @@ export default {
       date: null,
       menu: false,
       datesAll: [],
+      datesAllRules: [
+        v => (!!v && v.length > 0) || 'Must be Specified',
+        v => (v && v.length <= 10) || 'Max 10 dates',
+      ],
+      // minDate: new Date(),
     };
+  },
+  props: {
+    id: {
+      default: 1,
+      type: Number,
+    },
+  },
+  computed: {
+    minDate() {
+      const today = new Date();
+      return this.formatDate(today);
+    },
+    maxDate() {
+      const today = new Date();
+      today.setFullYear(today.getFullYear() + 1);
+      return this.formatDate(today);
+    },
   },
   methods: {
     save(date) {
@@ -69,6 +97,7 @@ export default {
       } else {
         this.datesAll.splice(index, 1);
       }
+      this.$refs.dateText.focus();
     },
     getString(dtString) {
       const weekday = new Array(7);
@@ -84,6 +113,16 @@ export default {
       const dayWeek = dt.getUTCDay();
 
       return `${weekday[dayWeek]}, ${dt.getUTCMonth()}/${dt.getUTCDate()}`;
+    },
+    formatDate(date) {
+      let month = `${date.getMonth() + 1}`;
+      let day = `${date.getDate()}`;
+      const year = date.getFullYear();
+
+      if (month.length < 2) month = `0${month}`;
+      if (day.length < 2) day = `0${day}`;
+
+      return [year, month, day].join('-');
     },
   },
 };

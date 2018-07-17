@@ -24,8 +24,8 @@ const flights = {
   },
 
   mutations: {
-    FETCH_FLIGHTS(state, flights) {
-      state.flights = flights;
+    FETCH_FLIGHTS(state, newFlights) {
+      state.flights = newFlights;
     },
 
     toggleLoading(state) {
@@ -63,7 +63,7 @@ const airports = {
 
   getters: {
     filterSW(state) {
-      return state.airports.filter(airport => !!airport.sw_airport)
+      return state.airports.filter(airport => !!airport.sw_airport);
     },
     getLenAirports(state, getters) {
       return getters.filterSW.length;
@@ -74,8 +74,8 @@ const airports = {
     },
   },
   mutations: {
-    FETCH_AIRPORTS(state, airports) {
-      state.airports = airports;
+    FETCH_AIRPORTS(state, newAirports) {
+      state.airports = newAirports;
     },
 
     toggleLoading(state) {
@@ -89,9 +89,9 @@ const airports = {
     },
   },
   actions: {
-    fetchAirports({ commit }, payload) {
+    fetchAirports({ commit }) {
       commit('onLoading');
-      Vue.axios.get(`http://localhost:8000/query_flight/airports/`)
+      Vue.axios.get('http://localhost:8000/query_flight/airports/')
         .then((response) => {
           commit('FETCH_AIRPORTS', response.data);
           commit('offLoading');
@@ -104,9 +104,68 @@ const airports = {
   },
 };
 
+const formDetails = {
+  namespaced: true,
+  state: {
+    cards: [
+      {
+        id: 1,
+        origins: [],
+        destinations: [],
+        dates: [],
+      },
+    ],
+    // height: null,
+  },
+  getters: {
+    numCards(state) {
+      return state.cards.length;
+    },
+    maxCardId(state) {
+      return Math.max(...state.cards.map(card => card.id));
+    },
+    hideOneCard(state, getters) {
+      return getters.numCards === 1;
+    },
+    cardById: (state) => (id) => {
+      return state.cards.find(card => card.id === id)
+    },
+    // cardById(state, id) {
+    //   return state.cards.find(card => card.id === id);
+    // },
+  },
+  mutations: {
+    addEmptyCard(state, card) {
+      state.cards.push(card);
+    },
+    setInputVal(state, payload) {
+      const card = state.cards.find(obj => obj.id === payload.id);
+
+    },
+  },
+  actions: {
+    addEmptyCard({ commit, getters }) {
+      const id = getters.maxCardId + 1;
+      const emptyCard = {
+        id,
+        origins: [],
+        destinations: [],
+        dates: [],
+      };
+      commit('addEmptyCard', emptyCard);
+    },
+    // setValue({ commit, getters }, payload) {
+    //   let card = getters.cardById(payload.id);
+    //   card[payload.description] = payload.value;
+    //   commit
+    // },
+  },
+};
+
 export default new Vuex.Store({
   modules: {
     flights,
     airports,
+    formDetails,
   },
 });

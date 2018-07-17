@@ -4,9 +4,14 @@
     :items="getParsableAirports"
     item-text="name"
     item-value="abrev"
-    :label="label"
+    :label="labelString"
     multiple
     clearable
+    box
+    prepend-inner-icon="place"
+    :height="height"
+    required
+    :rules="selectedAirportsRules"
   >
     <template slot="selection" slot-scope="data">
       <!--TODO selectItem isn't ideal.  -->
@@ -37,13 +42,22 @@ import { mapGetters, mapActions, mapState } from 'vuex';
 export default {
   data() {
     return {
-      selectedAirports: [],
+      // selectedAirports: [],
+      height: null,
+      selectedAirportsRules: [
+        v => (!!v && v.length > 0) || `${this.label} Must be Specified`,
+        v => (v && v.length <= 10) || `Max 10 ${this.label} airports`,
+      ],
     };
   },
   props: {
     label: {
       type: String,
-      default: 'Select Airports',
+      default: 'Origin',
+    },
+    id: {
+      type: Number,
+      default: 1,
     },
   },
   computed: {
@@ -54,6 +68,26 @@ export default {
     ...mapState([
       'loading',
     ]),
+    labelString() {
+      return `${this.label} Airports`;
+    },
+    selectedAirports: {
+      get() {
+        let vals;
+        if (this.label.toUpperDCase() === 'ORIGIN') {
+          vals = this.$store.getters.cardById(this.id).origins;
+        } else if (this.label.toUpperDCase() === 'DESTINATION') {
+          vals = this.$store.getters.cardById(this.id).destinations;
+        } else {
+          vals = [];
+          console.log('label must be ORIGIN or DESTINATION');
+        }
+        return vals;
+      },
+      set(value) {
+        this.$store.dispatch()
+      },
+    },
   },
   methods: {
     ...mapActions([

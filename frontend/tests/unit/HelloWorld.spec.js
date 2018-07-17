@@ -29,15 +29,3 @@ describe('HelloWorld.vue', () => {
     expect(wrapper.props().author).toBe(msg);
   });
 });
-
-// describe('description', () => {
-//   it('render props.authoer when passed', () => {
-//     const msg = 'new message';
-//     const wrapper = shallowMount(HelloWorld, {
-//       propsData: {
-//         author: msg,
-//       },
-//     });
-//     expect(wrapper.text()).toMatch(msg);
-//   });
-// });
