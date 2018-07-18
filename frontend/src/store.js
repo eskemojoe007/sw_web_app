@@ -206,6 +206,18 @@ const formDetails = {
         commit('commitSpliceValue', { id, input: 'dates', index });
       }
     },
+    copyInvertCard({ commit, state, getters }, oldID) {
+      const newID = getters.maxCardId + 1;
+      commit('addCardList', newID);
+      commit('addCardObj', {
+        id: newID,
+        card: {
+          origins: state.cards[oldID].destinations,
+          destinations: state.cards[oldID].origins,
+          dates: [],
+        },
+      });
+    },
   },
 };
 

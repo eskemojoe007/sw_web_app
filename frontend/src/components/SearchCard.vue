@@ -45,6 +45,7 @@
               outline
               small
               color="primary"
+              @click.native="copyInvertCard(id)"
             >
               <v-icon>swap_horiz</v-icon>
             </v-btn>
@@ -117,6 +118,7 @@ export default {
     ...mapActions('formDetails', [
       'addEmptyCard',
       'removeCard',
+      'copyInvertCard',
     ]),
   },
 };
