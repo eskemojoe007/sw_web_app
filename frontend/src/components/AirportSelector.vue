@@ -94,6 +94,21 @@ export default {
         });
         // this.$store.commit('setCardValues', { id: this.id, value })
       },
+      // TODO: Disable airports selected by the other side of the card.
+      // disabledAirports() {
+      //   let vals;
+      //   if (this.label.toUpperCase() === 'ORIGIN') {
+      //     // vals = this.$store.getters.cardById(this.id).origins;
+      //     vals = this.$store.state.formDetails.cards[this.id].destinations;
+      //   } else if (this.label.toUpperCase() === 'DESTINATION') {
+      //     // vals = this.$store.getters.cardById(this.id).destinations;
+      //     vals = this.$store.state.formDetails.cards[this.id].origins;
+      //   } else {
+      //     vals = [];
+      //     console.log('label must be ORIGIN or DESTINATION');
+      //   }
+      //   return vals;
+      // },
     },
   },
   methods: {

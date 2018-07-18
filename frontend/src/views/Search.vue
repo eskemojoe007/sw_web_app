@@ -13,6 +13,21 @@
       </v-btn>
       <v-btn @click="clear">clear all</v-btn>
     </v-form>
+    <v-snackbar
+      v-model="alert"
+      color="error"
+      :timeout="timeout"
+    >
+      <v-icon color="white">priority_high</v-icon>
+      Multiple Searches is currently not supported.
+      <v-btn
+        dark
+        flat
+        @click.native="alert = false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -27,6 +42,8 @@ export default {
   data() {
     return {
       valid: true,
+      alert: false,
+      timeout: 3000,
     };
   },
   components: {
@@ -37,13 +54,17 @@ export default {
     // ...mapGetters('formDetails', ['maxCardId']),
   },
   methods: {
+    ...mapActions('formDetails', ['resetState']),
     submit() {
-      // this.valid = this.$refs.form.validate();
-      console.log(this.$refs.form.validate());
+      this.valid = this.$refs.form.validate();
+      // console.log(this.$refs.form.validate());
+      if (this.cardList.length > 1) {
+        this.alert = true;
+      }
     },
     clear() {
       this.$refs.form.reset();
-      // TODO: Delete the cards we no longer need.
+      this.resetState();
     },
   },
 };

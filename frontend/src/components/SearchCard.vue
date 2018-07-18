@@ -1,84 +1,67 @@
 <template lang="html">
   <div>
-    <v-card class="mb-2">
+    <v-card class="mb-2 px-1 pb-1">
       <v-layout row wrap>
         <v-flex xs12 md4><AirportSelector label="Origin" :id="id"/></v-flex>
         <v-flex xs12 md4><AirportSelector label="Destination" :id="id"/></v-flex>
         <v-flex xs12 md4><MultiDate :id="id"/></v-flex>
       </v-layout>
-      <v-card-actions>
-        <v-spacer/>
-        <v-speed-dial
-          v-model="fab"
-          transition="slide-x-reverse-transition"
-          direction="left"
-          open-on-hover
-        >
-          <v-btn
-            slot="activator"
-            v-model="fab"
-            color="primary"
-            dark
-            fab
-            small
-          >
-            <v-icon large>chevron_left</v-icon>
-            <v-icon>close</v-icon>
-          </v-btn>
-          <v-tooltip bottom>
-            <v-btn
-              slot='activator'
-              fab
-              outline
-              small
-              color="primary"
-              @click.native="addEmptyCard(id)"
-            >
-              <v-icon>add</v-icon>
-            </v-btn>
-            <span>Add new search below</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <v-btn
-              slot='activator'
-              fab
-              outline
-              small
-              color="primary"
-              @click.native="copyInvertCard(id)"
-            >
-              <v-icon>swap_horiz</v-icon>
-            </v-btn>
-            <span>Add and reverse Locations</span>
-          </v-tooltip>
-          <v-btn
-            fab
-            outline
-            small
-            color="red"
-            v-if="!hideOneCard"
-            @click.native="removeCard(id)"
-          >
-            <v-icon>delete</v-icon>
-          </v-btn>
-        </v-speed-dial>
-      </v-card-actions>
-    </v-card>
-    <v-snackbar
-      v-model="alert"
-      color="warning"
-      :timeout="timeout"
-    >
-      <v-icon color="white">priority_high</v-icon>
-      Multiple Searches is currently not supported.
-      <v-btn
-        dark
-        flat
-        @click.native="alert = false"
+      <v-speed-dial
+        class="speed-dial-card"
+        v-model="fab"
+        transition="slide-x-reverse-transition"
+        direction="left"
+        open-on-hover
+        right
+        absolute
       >
-        Close
-      </v-btn>
-    </v-snackbar>
+        <v-btn
+          slot="activator"
+          v-model="fab"
+          color="accent"
+          dark
+          fab
+          small
+        >
+          <v-icon large>chevron_left</v-icon>
+          <v-icon>close</v-icon>
+        </v-btn>
+        <v-tooltip bottom>
+          <v-btn
+            slot='activator'
+            fab
+            small
+            @click.native="addEmptyCard(id)"
+            color='accent'
+          >
+            <v-icon>add</v-icon>
+          </v-btn>
+          <span>Add new search below</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <v-btn
+            slot='activator'
+            fab
+            small
+            @click.native="copyInvertCard(id)"
+            color='accent'
+          >
+            <v-icon>swap_horiz</v-icon>
+          </v-btn>
+          <span>Add and reverse Locations</span>
+        </v-tooltip>
+        <v-btn
+          fab
+          small
+          color="red accent-1"
+          dark
+          v-if="!hideOneCard"
+          @click.native="removeCard(id)"
+        >
+          <v-icon>delete</v-icon>
+        </v-btn>
+      </v-speed-dial>
+    </v-card>
   </div>
 
 </template>
@@ -98,8 +81,6 @@ export default {
   },
   data() {
     return {
-      alert: false,
-      timeout: 3000,
       fab: false,
     };
   },
@@ -125,4 +106,7 @@ export default {
 </script>
 
 <style lang="css">
+.speed-dial-card {
+  bottom: -20px !important;
+}
 </style>

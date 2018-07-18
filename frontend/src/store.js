@@ -104,6 +104,14 @@ const airports = {
   },
 };
 
+
+function emptyCard() {
+  return {
+    origins: [],
+    destinations: [],
+    dates: [],
+  };
+}
 // const emptyCard = {
 //   origins: [],
 //   destinations: [],
@@ -115,11 +123,7 @@ const formDetails = {
   namespaced: true,
   state: {
     cards: {
-      1: {
-        origins: [],
-        destinations: [],
-        dates: [],
-      },
+      1: emptyCard(),
     },
     cardList: [1],
     // height: null,
@@ -172,6 +176,12 @@ const formDetails = {
     commitSpliceValue(state, payload) {
       state.cards[payload.id][payload.input].splice(payload.index, 1);
     },
+    resetCardObj(state) {
+      state.cards = { 1: emptyCard() };
+    },
+    resetCartList(state) {
+      state.cardList = [1];
+    },
     // setInputVal(state, payload) {
     //   const card = state.cards.find(obj => obj.id === payload.id);
     // },
@@ -182,11 +192,7 @@ const formDetails = {
       commit('addCardList', { newID, oldID });
       commit('addCardObj', {
         id: newID,
-        card: {
-          origins: [],
-          destinations: [],
-          dates: [],
-        },
+        card: emptyCard(),
       });
     },
     removeCard({ commit }, id) {
@@ -221,9 +227,10 @@ const formDetails = {
         },
       });
     },
-    // removeAll({ commit, state}) {
-    //
-    // },
+    resetState({ commit }) {
+      commit('resetCardObj');
+      commit('resetCartList');
+    },
   },
 };
 
