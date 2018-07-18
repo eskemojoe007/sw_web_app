@@ -104,21 +104,12 @@ export default {
   },
   methods: {
     ...mapActions('formDetails', [
-      'pushCardValues',
-      'spliceCardValues',
+
+      'datesSave',
       'setCardValues',
     ]),
     save(date) {
-      const dates = this.datesAll;
-      const index = dates.findIndex(x => x === date);
-      if (index === -1) {
-        this.pushCardValues({ id: this.id, input: 'dates', value: date });
-      } else {
-        // this.datesAll.splice(index, 1);
-        console.log('Delete that MOFO');
-        this.spliceCardValues({ id: this.id, input: 'dates', index });
-      }
-      // this.$refs.dateText.focus();
+      this.datesSave({ id: this.id, date });
     },
     getString(dtString) {
       const weekday = new Array(7);

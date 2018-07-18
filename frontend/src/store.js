@@ -129,7 +129,7 @@ const formDetails = {
       return state.cardList.length;
     },
     maxCardId(state) {
-      return Math.max(...state.cardList)
+      return Math.max(...state.cardList);
       // return Math.max(...state.cards.map(card => card.id));
     },
     hideOneCard(state, getters) {
@@ -193,17 +193,19 @@ const formDetails = {
     setCardValues({ commit }, payload) {
       commit('commitCardValues', payload);
     },
-    pushCardValues({ commit }, payload) {
-      commit('commitPushValue', payload);
+    datesSave({ commit, state }, payload) {
+      const { id } = payload;
+      const { date } = payload;
+      const { dates } = state.cards[id];
+      // const dates = state.cards[id].dates;
+      const index = dates.findIndex(x => x === date);
+      if (index === -1) {
+        commit('commitPushValue', { id, input: 'dates', value: date });
+      } else {
+        // this.datesAll.splice(index, 1);
+        commit('commitSpliceValue', { id, input: 'dates', index });
+      }
     },
-    spliceCardValues({ commit }, payload) {
-      commit('commitSpliceValue', payload);
-    },
-    // setValue({ commit, getters }, payload) {
-    //   let card = getters.cardById(payload.id);
-    //   card[payload.description] = payload.value;
-    //   commit
-    // },
   },
 };
 
