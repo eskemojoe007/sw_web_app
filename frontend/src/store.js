@@ -143,8 +143,11 @@ const formDetails = {
     // },
   },
   mutations: {
-    addCardList(state, id) {
-      state.cardList.push(id);
+    addCardList(state, payload) {
+      const { oldID } = payload;
+      const { newID } = payload;
+      const index = state.cardList.findIndex(x => x === oldID);
+      state.cardList.splice(index + 1, 0, newID);
     },
     addCardObj(state, payload) {
       state.cards[payload.id] = payload.card;
@@ -174,11 +177,11 @@ const formDetails = {
     // },
   },
   actions: {
-    addEmptyCard({ commit, getters }) {
-      const id = getters.maxCardId + 1;
-      commit('addCardList', id);
+    addEmptyCard({ commit, getters }, oldID) {
+      const newID = getters.maxCardId + 1;
+      commit('addCardList', { newID, oldID });
       commit('addCardObj', {
-        id,
+        id: newID,
         card: {
           origins: [],
           destinations: [],
@@ -208,7 +211,7 @@ const formDetails = {
     },
     copyInvertCard({ commit, state, getters }, oldID) {
       const newID = getters.maxCardId + 1;
-      commit('addCardList', newID);
+      commit('addCardList', { newID, oldID });
       commit('addCardObj', {
         id: newID,
         card: {
@@ -218,6 +221,9 @@ const formDetails = {
         },
       });
     },
+    // removeAll({ commit, state}) {
+    //
+    // },
   },
 };
 

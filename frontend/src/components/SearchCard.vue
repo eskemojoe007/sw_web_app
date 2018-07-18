@@ -32,7 +32,7 @@
               outline
               small
               color="primary"
-              @click.native="addEmptyCard"
+              @click.native="addEmptyCard(id)"
             >
               <v-icon>add</v-icon>
             </v-btn>
