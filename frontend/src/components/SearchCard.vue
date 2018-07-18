@@ -1,67 +1,67 @@
 <template lang="html">
   <div>
-    <v-card>
+    <v-card class="mb-2">
       <v-layout row wrap>
-        <v-flex xs12 sm4><AirportSelector label="Origin" :id="id"/></v-flex>
-        <v-flex xs12 sm4><AirportSelector label="Destination" :id="id"/></v-flex>
-        <v-flex xs12 sm4><MultiDate/></v-flex>
+        <v-flex xs12 md4><AirportSelector label="Origin" :id="id"/></v-flex>
+        <v-flex xs12 md4><AirportSelector label="Destination" :id="id"/></v-flex>
+        <v-flex xs12 md4><MultiDate :id="id"/></v-flex>
       </v-layout>
-      <v-speed-dial
-        v-model="fab"
-        top
-        right
-        absolute
-        transition="slide-y-reverse-transition"
-        direction="left"
-        open-on-hover
-      >
-
-        <v-btn
-          slot="activator"
+      <v-card-actions>
+        <v-spacer/>
+        <v-speed-dial
           v-model="fab"
-          color="primary"
-          dark
-          fab
+          transition="slide-x-reverse-transition"
+          direction="left"
+          open-on-hover
         >
-          <v-icon large>chevron_left</v-icon>
-          <v-icon>close</v-icon>
-        </v-btn>
-        <v-tooltip bottom>
           <v-btn
-            slot='activator'
+            slot="activator"
+            v-model="fab"
+            color="primary"
+            dark
+            fab
+            small
+          >
+            <v-icon large>chevron_left</v-icon>
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-tooltip bottom>
+            <v-btn
+              slot='activator'
+              fab
+              outline
+              small
+              color="primary"
+              @click.native="addEmptyCard"
+            >
+              <v-icon>add</v-icon>
+            </v-btn>
+            <span>Add new search below</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <v-btn
+              slot='activator'
+              fab
+              outline
+              small
+              color="primary"
+            >
+              <v-icon>swap_horiz</v-icon>
+            </v-btn>
+            <span>Add and reverse Locations</span>
+          </v-tooltip>
+          <v-btn
             fab
             outline
             small
-            color="primary"
-            @click.native="addEmptyCard"
+            color="red"
+            v-if="!hideOneCard"
+            @click.native="removeCard(id)"
           >
-            <v-icon>add</v-icon>
+            <v-icon>delete</v-icon>
           </v-btn>
-          <span>Add new search below</span>
-        </v-tooltip>
-        <v-tooltip bottom>
-          <v-btn
-            slot='activator'
-            fab
-            outline
-            small
-            color="primary"
-          >
-            <v-icon>swap_horiz</v-icon>
-          </v-btn>
-          <span>Add and reverse Locations</span>
-        </v-tooltip>
-        <v-btn
-          fab
-          outline
-          small
-          color="red"
-          v-if="!hideOneCard"
-          @click.native="removeCard(id)"
-        >
-          <v-icon>delete</v-icon>
-        </v-btn>
-      </v-speed-dial>
+        </v-speed-dial>
+      </v-card-actions>
     </v-card>
     <v-snackbar
       v-model="alert"

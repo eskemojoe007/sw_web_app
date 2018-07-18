@@ -87,7 +87,11 @@ export default {
         return vals;
       },
       set(value) {
-        this.setCardValues({ id: this.id, value})
+        this.setCardValues({
+          id: this.id,
+          input: `${this.label.toLowerCase()}s`,
+          value,
+        });
         // this.$store.commit('setCardValues', { id: this.id, value })
       },
     },

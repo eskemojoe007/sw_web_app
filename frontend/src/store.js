@@ -104,18 +104,22 @@ const airports = {
   },
 };
 
-const emptyCard = {
-  origins: [],
-  destinations: [],
-  dates: [],
-};
+// const emptyCard = {
+//   origins: [],
+//   destinations: [],
+//   dates: [],
+// };
 
 // https://forum.vuejs.org/t/vuex-best-practices-for-complex-objects/10143
 const formDetails = {
   namespaced: true,
   state: {
     cards: {
-      1: emptyCard,
+      1: {
+        origins: [],
+        destinations: [],
+        dates: [],
+      },
     },
     cardList: [1],
     // height: null,
@@ -157,7 +161,13 @@ const formDetails = {
       delete state.cards[id];
     },
     commitCardValues(state, payload) {
-      state.cards[payload.id] = payload.value;
+      state.cards[payload.id][payload.input] = payload.value;
+    },
+    commitPushValue(state, payload) {
+      state.cards[payload.id][payload.input].push(payload.value);
+    },
+    commitSpliceValue(state, payload) {
+      state.cards[payload.id][payload.input].splice(payload.index, 1);
     },
     // setInputVal(state, payload) {
     //   const card = state.cards.find(obj => obj.id === payload.id);
@@ -167,7 +177,14 @@ const formDetails = {
     addEmptyCard({ commit, getters }) {
       const id = getters.maxCardId + 1;
       commit('addCardList', id);
-      commit('addCardObj', { id, card: emptyCard });
+      commit('addCardObj', {
+        id,
+        card: {
+          origins: [],
+          destinations: [],
+          dates: [],
+        },
+      });
     },
     removeCard({ commit }, id) {
       commit('removeCardList', id);
@@ -175,6 +192,12 @@ const formDetails = {
     },
     setCardValues({ commit }, payload) {
       commit('commitCardValues', payload);
+    },
+    pushCardValues({ commit }, payload) {
+      commit('commitPushValue', payload);
+    },
+    spliceCardValues({ commit }, payload) {
+      commit('commitSpliceValue', payload);
     },
     // setValue({ commit, getters }, payload) {
     //   let card = getters.cardById(payload.id);

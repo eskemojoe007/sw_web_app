@@ -58,12 +58,14 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   data() {
     return {
       date: null,
       menu: false,
-      datesAll: [],
+      // datesAll: [],
       datesAllRules: [
         v => (!!v && v.length > 0) || 'Must be Specified',
         v => (v && v.length <= 10) || 'Max 10 dates',
@@ -87,17 +89,36 @@ export default {
       today.setFullYear(today.getFullYear() + 1);
       return this.formatDate(today);
     },
+    datesAll: {
+      get() {
+        return this.$store.state.formDetails.cards[this.id].dates;
+      },
+      set(value) {
+        this.setCardValues({
+          id: this.id,
+          input: 'dates',
+          value,
+        });
+      },
+    },
   },
   methods: {
+    ...mapActions('formDetails', [
+      'pushCardValues',
+      'spliceCardValues',
+      'setCardValues',
+    ]),
     save(date) {
-      const index = this.datesAll.findIndex(x => x === date);
-
+      const dates = this.datesAll;
+      const index = dates.findIndex(x => x === date);
       if (index === -1) {
-        this.datesAll.push(date);
+        this.pushCardValues({ id: this.id, input: 'dates', value: date });
       } else {
-        this.datesAll.splice(index, 1);
+        // this.datesAll.splice(index, 1);
+        console.log('Delete that MOFO');
+        this.spliceCardValues({ id: this.id, input: 'dates', index });
       }
-      this.$refs.dateText.focus();
+      // this.$refs.dateText.focus();
     },
     getString(dtString) {
       const weekday = new Array(7);
