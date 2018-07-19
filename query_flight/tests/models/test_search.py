@@ -3,6 +3,7 @@ from django.utils import timezone
 from query_flight.models import Search, Flight
 import random
 
+
 @pytest.mark.django_db
 class Test_Search_Model(object):
 
@@ -18,7 +19,7 @@ class Test_Search_Model(object):
         assert s.time >= n
 
     def test_number_flights(self, basic_flight_dict, search):
-        n = random.randint(1,10)
+        n = random.randint(1, 10)
         for i in range(n):
             Flight.objects.create(**basic_flight_dict)
         assert search.num_flights() == n
