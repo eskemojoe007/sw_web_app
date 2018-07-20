@@ -17,6 +17,7 @@ urlpatterns = [
          apiviews.LayoverList.as_view(), name='layovers-list'),
     path('search/api/', apiviews.SearchPost.as_view(), name='search-post'),
     path('', views.index, name='index'),
+    path('dummy', views.dummy, name='dummy'),
     # re_path(r'^(?i)airport/(?P<pk>[\w-]{3})/$',views.AirportView.as_view(),name='Airport'),
     # path('airport/<str:pk>/',views.AirportView.as_view(),name='Airport_Specific'),
     # path('airport/',views.AirportIndexView.as_view(),name='Airport'),

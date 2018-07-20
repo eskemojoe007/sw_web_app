@@ -6,6 +6,7 @@ from django.views import generic
 from .forms import FlightForm, SearchForm
 from django.urls import reverse
 from .utils import SW_Sel_Multiple
+from .tasks import add
 
 
 def index(request):
@@ -16,6 +17,19 @@ def index(request):
 def flight_new(request):
     form = FlightForm()
     return render(request, 'query_flight/flight.html', {'form': form})
+
+
+def dummy(request):
+    if request.method == 'POST':
+
+        # create a form instance and populate it with data from the request:
+        form = SearchForm(request.POST)
+
+        add.delay(4, 4)
+        return HttpResponse('You called DUMMY!')
+    else:
+        form = SearchForm()
+    return render(request, 'query_flight/search.html', {'form': form})
 
 
 def search(request):
