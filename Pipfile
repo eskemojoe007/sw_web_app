@@ -19,6 +19,7 @@ gunicorn = "*"
 dj-database-url = "*"
 django-heroku = "*"
 django-cors-headers = "*"
+celery = "*"
 
 [dev-packages]
 setuptools = "*"

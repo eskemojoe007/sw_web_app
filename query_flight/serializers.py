@@ -125,7 +125,7 @@ class FlightPostSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         '''want to run the checks in the manager'''
-        flight = Flight.objects.validate_flight(**attrs)
+        Flight.objects.validate_flight(**attrs)
         return attrs
 
 
