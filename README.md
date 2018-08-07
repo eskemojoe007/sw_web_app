@@ -17,3 +17,6 @@ run `pipenv run python manage.py runserver`
 
 ### Running all the tests
 run `pipenv run python -m pytest`
+
+## Deploy Frontent
+`surge dist/ sw.davidfolkner.com`

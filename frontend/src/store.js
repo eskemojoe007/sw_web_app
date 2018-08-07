@@ -42,7 +42,7 @@ const flights = {
   actions: {
     fetchFlights({ commit }, payload) {
       commit('onLoading');
-      Vue.axios.get(`http://localhost:8000/query_flight/searchs/${payload}/`)
+      Vue.axios.get(`https://pacific-caverns-22538.herokuapp.com/query_flight/searchs/${payload}/`)
         .then((response) => {
           commit('FETCH_FLIGHTS', response.data.flight_set);
           commit('offLoading');
@@ -91,7 +91,7 @@ const airports = {
   actions: {
     fetchAirports({ commit }) {
       commit('onLoading');
-      Vue.axios.get('http://localhost:8000/query_flight/airports/')
+      Vue.axios.get('https://pacific-caverns-22538.herokuapp.com/query_flight/airports/')
         .then((response) => {
           commit('FETCH_AIRPORTS', response.data);
           commit('offLoading');

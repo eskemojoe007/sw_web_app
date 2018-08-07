@@ -11,7 +11,6 @@
         v-model="fab"
         transition="slide-x-reverse-transition"
         direction="left"
-        open-on-hover
         right
         absolute
       >
