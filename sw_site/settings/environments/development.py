@@ -14,3 +14,4 @@ CORS_ORIGIN_WHITELIST = (
 )
 
 CELERY_BROKER_URL = 'pyamqp://admin:mrbill@localhost:5672/myvhost'
+CELERY_RESULT_BACKEND = 'django-db'

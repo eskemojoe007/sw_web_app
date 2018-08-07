@@ -103,6 +103,7 @@ class Airport(models.Model):
 
 class Search(models.Model):
     time = models.DateTimeField(auto_now=True)
+    # TODO: Add user information here...
 
     def __str__(self):
         return '{} - {}'.format(self.id, self.time)
@@ -110,6 +111,13 @@ class Search(models.Model):
     def num_flights(self):
         # TODO: This could be a terrible slow method
         return len(self.flight_set.all())
+
+
+class SearchCard(models.Model):
+    search = models.ForeignKey(
+        Search, on_delete=models.CASCADE, verbose_name='Search')
+    # TODO: Add airports and dates for search here.
+    # I can't remember the right way to do this
 
 
 class FlightManager(models.Manager):
@@ -147,8 +155,8 @@ class Flight(models.Model):
         validators=[MinValueValidator(0)], null=True, blank=True)
     business_select = models.FloatField(
         validators=[MinValueValidator(0)], null=True, blank=True)
-    search = models.ForeignKey(
-        Search, on_delete=models.CASCADE, verbose_name='Search')
+    search_card = models.ForeignKey(
+        SearchCard, on_delete=models.CASCADE, verbose_name='SearchCard')
 
     objects = FlightManager()
 
