@@ -32,7 +32,9 @@
             v-for="(item, i) in items_bottom"
             :key="i"
             :to="item.to"
+            :href="item.href"
             :active-class="highlightColor"
+            :target="item.target"
           >
             <v-list-tile-action>
               <v-icon v-html="item.icon"/>
@@ -127,12 +129,16 @@ export default {
           title: 'About',
           // to: '/about',
           to: { name: 'about' },
+          href: null,
+          target: null,
         },
         {
           icon: 'bug_report',
           title: 'Report Bug',
           // to: '/about',
-          to: { name: 'bug' },
+          to: null,
+          href: 'https://github.com/eskemojoe007/sw_web_app/issues/new',
+          target: '_blank',
         },
       ],
       miniVariant: false,

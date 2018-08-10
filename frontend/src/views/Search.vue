@@ -6,7 +6,7 @@
       <!-- <SearchCard/> -->
       <v-btn
         :disabled="!valid"
-        @click="submit"
+        @click.native="submit"
         color="primary"
       >
         submit
@@ -19,7 +19,7 @@
       :timeout="timeout"
     >
       <v-icon color="white">priority_high</v-icon>
-      Multiple Searches is currently not supported.
+      Search is not currently connected to the backend just yet...Be patient
       <v-btn
         dark
         flat
@@ -57,10 +57,13 @@ export default {
     ...mapActions('formDetails', ['resetState']),
     submit() {
       this.valid = this.$refs.form.validate();
-      // console.log(this.$refs.form.validate());
-      if (this.cardList.length > 1) {
+      if (this.valid) {
         this.alert = true;
       }
+      // console.log(this.$refs.form.validate());
+      // if (this.cardList.length > 1) {
+      //   this.alert = true;
+      // }
     },
     clear() {
       this.$refs.form.reset();

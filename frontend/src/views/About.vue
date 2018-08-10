@@ -1,5 +1,6 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <v-container>
+    <h1>About SW Searcher</h1>
+    <p>Need to fill this son-of-a-bitch in</p>
+  </v-container>
 </template>
