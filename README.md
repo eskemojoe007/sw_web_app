@@ -28,10 +28,13 @@ I use `pipenv` for everything.  To install follow these steps:
 4. In the repository run `pipenv install --dev`
 
 #### Launching the server
-within the `sw_site` folder run `pipenv run python manage.py runserver` 
+within the `sw_site` folder run `pipenv run python manage.py runserver`
 
 #### Running all the tests
-within the `sw_site` folder run `pipenv run python -m pytest` 
+within the `sw_site` folder run `pipenv run python -m pytest`
+
+#### Deploy the backend using Heroku
+`git push heroku master`
 
 ### Vue CLI Frontend
 I power the vue front end with `npm` and [vue clie](https://cli.vuejs.org/).  
@@ -41,6 +44,8 @@ After installing `npm`, runing `npm install` in the `frontend` directory should 
 #### Launching the frontend server
 runing `npm run serve` in the `frontend` folder will run the front end.  You often need the backend temp server running as well ( to connect and pull proper data)
 
+#### Running Tests
+`npm run test:unit` from within the `frontend` folder.
+
 #### Deploy Frontent
 `surge dist/ sw.davidfolkner.com`
-

@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 
-const flights = {
+export const flights = {
   state: {
     flights: [],
     loading: false,
