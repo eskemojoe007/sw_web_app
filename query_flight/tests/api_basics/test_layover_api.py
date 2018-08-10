@@ -5,20 +5,21 @@ from rest_framework import status
 from query_flight.models import Airport, Flight, Layover
 # from .conftest import check_get, check_post
 
+
 @pytest.fixture
 def layover_list(basic_flight):
-    return reverse('query_flight:layovers-list',args=[basic_flight.id])
-
+    return reverse('query_flight:layovers-list', args=[basic_flight.id])
 
 
 @pytest.mark.django_db
-def test_layovers_list(apiclient,layover_list):
+def test_layovers_list(apiclient, layover_list):
     response = apiclient.get(layover_list)
     assert response.status_code == status.HTTP_200_OK
 
+
 @pytest.mark.django_db
-def test_post_get_layover(apiclient,layover_list,post_layover_dict):
-    response = apiclient.post(layover_list,post_layover_dict)
+def test_post_get_layover(apiclient, layover_list, post_layover_dict):
+    response = apiclient.post(layover_list, post_layover_dict)
     assert response.status_code == status.HTTP_201_CREATED
     assert Layover.objects.count() == 1
     assert Flight.objects.count() == 1
@@ -38,13 +39,14 @@ def test_post_get_layover(apiclient,layover_list,post_layover_dict):
     assert response.data[0].get('timedelta') == layover.timedelta()
     assert response.data[0].get('change_planes') == layover.change_planes
 
+
 @pytest.mark.django_db
-@pytest.mark.parametrize('kwargs',[
-    {'airport':'BBB'},
+@pytest.mark.parametrize('kwargs', [
+    {'airport': 'BBB'},
 ])
-def test_post_bad_keys(apiclient,layover_list,post_layover_dict,kwargs):
+def test_post_bad_keys(apiclient, layover_list, post_layover_dict, kwargs):
     post_layover_dict.update(kwargs)
-    response = apiclient.post(layover_list,post_layover_dict)
+    response = apiclient.post(layover_list, post_layover_dict)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert list(kwargs.keys())[0] in str(response.json())
     assert "object does not exist" in str(response.json())
