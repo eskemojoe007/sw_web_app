@@ -17,6 +17,7 @@ CORS_ORIGIN_WHITELIST = (
     '127.0.0.1:8000',
     'localhost:8080',
     '127.0.0.1:8080',
+    'sw.davidfolkner.com:80'
 )
 
 # MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware'] + MIDDLEWARE
