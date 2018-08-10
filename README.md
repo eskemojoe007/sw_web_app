@@ -36,6 +36,8 @@ within the `sw_site` folder run `pipenv run python -m pytest`
 #### Deploy the backend using Heroku
 `git push heroku master`
 
+or use `git push heroku develop:master` to deploy `develop` branch
+
 ### Vue CLI Frontend
 I power the vue front end with `npm` and [vue clie](https://cli.vuejs.org/).  
 
@@ -48,4 +50,5 @@ runing `npm run serve` in the `frontend` folder will run the front end.  You oft
 `npm run test:unit` from within the `frontend` folder.
 
 #### Deploy Frontent
+`npm run build`
 `surge dist/ sw.davidfolkner.com`

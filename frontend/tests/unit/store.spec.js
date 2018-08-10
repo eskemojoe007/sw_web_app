@@ -20,6 +20,5 @@ describe('Flight Store', () => {
     expect(state.loading).toBe(true);
     flights.mutations.toggleLoading(state);
     expect(state.loading).toBe(false);
-
   });
 });
