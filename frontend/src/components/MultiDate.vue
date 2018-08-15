@@ -124,7 +124,7 @@ export default {
       const dt = new Date(dtString);
       const dayWeek = dt.getUTCDay();
 
-      return `${weekday[dayWeek]}, ${dt.getUTCMonth()}/${dt.getUTCDate()}`;
+      return `${weekday[dayWeek]}, ${dt.getMonth() + 1}/${dt.getDate()}`;
     },
     formatDate(date) {
       let month = `${date.getMonth() + 1}`;
