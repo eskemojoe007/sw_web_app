@@ -214,7 +214,7 @@ class SW_Sel_Single(SW_Sel_base):
             for layover, duration, change_plane in zip(layovers, duration, change_planes):
 
                 # TODO: Add airport error checking here...need to put a generic airport if there is an error
-                l = Layover.objects.create(
+                Layover.objects.create(
                     airport=Airport.objects.get(pk=layover),
                     flight=f,
                     change_planes=change_plane,
@@ -229,7 +229,8 @@ class SW_Sel_Single(SW_Sel_base):
     def get_row_flight_numbers(self, row_soup):
         # Returns a list of all the flight numbers for the given flight.
         fns_raw = row_soup.find('button', attrs={
-                                'class': 'flight-numbers--flight-number'}).find('span', {'class': 'actionable--text'}).text
+                                'class': 'flight-numbers--flight-number'}).find(
+                                    'span', {'class': 'actionable--text'}).text
         return list(map(str.strip, fns_raw.replace("#", "").strip().split('/')))
 
     def get_row_stops(self, row_soup):
@@ -272,7 +273,7 @@ class SW_Sel_Single(SW_Sel_base):
         fares = {'Business Select': None,
                  'Anytime': None, 'Wanna Get Away': None}
         for fare_box in fare_boxes:
-            if not 'fare-button_disabled' in fare_box['class']:
+            if 'fare-button_disabled' not in fare_box['class']:
                 b = fare_box.find('button', {'class': 'fare-button--button'})
                 label = b['aria-label']
                 for fare_type in fares.keys():

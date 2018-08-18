@@ -73,11 +73,15 @@ class Airport(models.Model):
                 raise ValidationError(
                     _('Got a response from Geolocator, but had no address'), code='no_address')
             elif err == key:
-                raise ValidationError(_('Got a response from Geolocator, had an address, but didnt have key: %(key)s'), params={
-                                      'key': err}, code='no_{}'.format(err))
+                raise ValidationError(_(
+                    'Got a response from Geolocator, had an address, but didnt have key: %(key)s'),
+                    params={
+                    'key': err}, code='no_{}'.format(err))
             else:
-                raise ValidationError(_('Got a response from Geolocator, had an address,KEY_ERROR of some kind %(raw)s'), params={
-                                      'raw': location.raw}, code='some_key')
+                raise ValidationError(_(
+                    'Got a response from Geolocator, had an address,KEY_ERROR of some kind %(raw)s'),
+                    params={
+                    'raw': location.raw}, code='some_key')
         except:
             raise ValidationError(
                 _('Geolocator - NO CLUE WHAT WENT WRONG'), code='no_clue')
@@ -108,9 +112,8 @@ class Search(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.id, self.time)
 
-    def num_flights(self):
-        # TODO: This could be a terrible slow method
-        return len(self.flight_set.all())
+    def num_cards(self):
+        return len(self.searchcard_set.all())
 
 
 class SearchCard(models.Model):
@@ -118,6 +121,10 @@ class SearchCard(models.Model):
         Search, on_delete=models.CASCADE, verbose_name='Search')
     # TODO: Add airports and dates for search here.
     # I can't remember the right way to do this
+
+    def num_flights(self):
+        # TODO: This could be a terrible slow method
+        return len(self.flight_set.all())
 
 
 class FlightManager(models.Manager):
@@ -168,10 +175,10 @@ class Flight(models.Model):
         return self.arrive_time - self.depart_time
 
     def min_price(self):
-        l = [x for x in [self.wanna_get_away, self.anytime,
-                         self.business_select] if (not x is None)]
-        if len(l) > 0:
-            return np.min(l)
+        prices = [x for x in [self.wanna_get_away, self.anytime,
+                              self.business_select] if (x is not None)]
+        if len(prices) > 0:
+            return np.min(prices)
         else:
             return None
 

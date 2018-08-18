@@ -1,7 +1,9 @@
 # from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Airport, Flight
-from django.shortcuts import get_object_or_404, render
+from .models import Airport
+# from .models import Flight
+# from django.shortcuts import get_object_or_404
+from django.shortcuts import render
 from django.views import generic
 from .forms import FlightForm, SearchForm
 from django.urls import reverse
@@ -20,16 +22,18 @@ def flight_new(request):
 
 
 def dummy(request):
-    if request.method == 'POST':
-
-        # create a form instance and populate it with data from the request:
-        form = SearchForm(request.POST)
-
-        add.delay(4, 4)
-        return HttpResponse('You called DUMMY!')
-    else:
-        form = SearchForm()
-    return render(request, 'query_flight/search.html', {'form': form})
+    # if request.method == 'POST':
+    #
+    #     # create a form instance and populate it with data from the request:
+    #     form = SearchForm(request.POST)
+    #
+        # add.delay(4, 4)
+    #     return HttpResponse('You called DUMMY!')
+    # else:
+    #     form = SearchForm()
+    # return render(request, 'query_flight/search.html', {'form': form})
+    add.delay(4, 4)
+    return HttpResponse('You called DUMMY!')
 
 
 def search(request):
