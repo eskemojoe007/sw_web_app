@@ -6,12 +6,12 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
 
-class FlightForm(forms.ModelForm):
-    class Meta:
-        model = Flight
-        fields = ('origin_airport', 'destination_airport', 'depart_time',
-                  'arrive_time', 'wanna_get_away', 'anytime',
-                  'business_select',)
+# class FlightForm(forms.ModelForm):
+#     class Meta:
+#         model = Flight
+#         fields = ('origin_airport', 'destination_airport', 'depart_time',
+#                   'arrive_time', 'wanna_get_away', 'anytime',
+#                   'business_select',)
 
 
 class SearchForm(forms.Form):

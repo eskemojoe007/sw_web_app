@@ -37,14 +37,11 @@ class Test_Flight_Model(object):
 
         assert f.travel_time() == timezone.timedelta(hours=9, minutes=50)
 
-    @pytest.mark.parametrize('airports', ['atl'], indirect=True)
-    def test_airport_connection(self, airports):
+    def test_airport_connection(self, basic_flight, search_case, atl_airport):
 
-        f = Flight(origin_airport=airports)
-
-        assert f.origin_airport == airports
-        assert f.origin_airport.abrev == airports.abrev
-        assert f.origin_airport.title == airports.title
+        assert basic_flight.origin_airport() == search_case.origin_airport
+        assert basic_flight.destination_airport() == search_case.destination_airport
+        assert basic_flight.origin_airport().abrev == atl_airport.abrev
 
     def test_tz_aware(self, basic_flight):
         '''
@@ -67,12 +64,12 @@ class Test_Flight_Model(object):
         with pytest.raises(ValidationError):
             f.full_clean()
 
-    def test_airport_match(self, basic_flight_dict, atl_airport):
-        basic_flight_dict.update({'origin_airport': atl_airport,
-                                  'destination_airport': atl_airport})
-
-        with pytest.raises(ValidationError):
-            f = Flight.objects.create(**basic_flight_dict)
+    # def test_airport_match(self, basic_flight_dict, atl_airport):
+    #     basic_flight_dict.update({'origin_airport': atl_airport,
+    #                               'destination_airport': atl_airport})
+    #
+    #     with pytest.raises(ValidationError):
+    #         f = Flight.objects.create(**basic_flight_dict)
 
     def test_times(self, basic_flight_dict):
         basic_flight_dict.update({'arrive_time': basic_flight_dict['depart_time'],

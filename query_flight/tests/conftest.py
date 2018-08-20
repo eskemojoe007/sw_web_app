@@ -1,6 +1,7 @@
 import pytest
 from django.utils import timezone
-from query_flight.models import Airport, Flight, Search, Layover, SearchCard
+from query_flight.models import Airport, Flight, Search, SearchCard, SearchCase
+# from query_flight.models import Layover
 
 
 @pytest.fixture(scope='function', params=[str, timezone.pytz.timezone])
@@ -84,24 +85,40 @@ def search():
 
 @pytest.fixture
 def search_card(search):
-    # TODO: Add the search terms here.
     return SearchCard.objects.create(search=search)
 
 
 @pytest.fixture
-def basic_flight_dict(atl_airport, boi_airport, search_card):
-    return {'origin_airport': atl_airport, 'destination_airport': boi_airport,
-            'depart_time': atl_airport.get_tz_obj().localize(timezone.datetime(2018, 4, 26, 6, 00, 00)),
-            'arrive_time': boi_airport.get_tz_obj().localize(timezone.datetime(2018, 4, 26, 13, 50, 00)),
-            'wanna_get_away': 438.0, 'anytime': 571.0, 'business_select': 599.0, 'search_card': search_card}
+def search_case_dict(search_card, atl_airport, boi_airport):
+    return {'origin_airport': atl_airport,
+            'destination_airport': boi_airport,
+            'date': timezone.datetime(2018, 4, 26, 6, 00, 00).date(),
+            'search_card': search_card}
 
 
 @pytest.fixture
-def post_flight_dict(atl_airport, boi_airport, search_card):
-    return {'origin_airport': atl_airport.abrev, 'destination_airport': boi_airport.abrev,
-            'depart_time': atl_airport.get_tz_obj().localize(timezone.datetime(2018, 4, 26, 6, 00, 00)),
+def search_case(search_case_dict):
+    return SearchCase.objects.create(**search_case_dict)
+
+
+@pytest.fixture
+def basic_flight_dict(atl_airport, boi_airport, search_case):
+    return {'depart_time': atl_airport.get_tz_obj().localize(timezone.datetime(2018, 4, 26, 6, 00, 00)),
             'arrive_time': boi_airport.get_tz_obj().localize(timezone.datetime(2018, 4, 26, 13, 50, 00)),
-            'wanna_get_away': 438.0, 'anytime': 571.0, 'business_select': 599.0, 'search_card': search_card.id}
+            'wanna_get_away': 438.0,
+            'anytime': 571.0,
+            'business_select': 599.0,
+            'search_case': search_case}
+
+
+@pytest.fixture
+def post_flight_dict(atl_airport, boi_airport, search_case):
+    return {'depart_time': atl_airport.get_tz_obj().localize(timezone.datetime(2018, 4, 26, 6, 00, 00)),
+            'arrive_time': boi_airport.get_tz_obj().localize(timezone.datetime(2018, 4, 26, 13, 50, 00)),
+            'wanna_get_away': 438.0,
+            'anytime': 571.0,
+            'business_select': 599.0,
+            'search_case': search_case.id}
 
 
 @pytest.fixture

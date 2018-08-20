@@ -1,6 +1,6 @@
 import pytest
 from django.utils import timezone
-from query_flight.models import Search, SearchCard
+from query_flight.models import Search, SearchCard, Flight
 import random
 
 
@@ -25,6 +25,23 @@ class Test_Search_Model(object):
         for i in range(n):
             SearchCard.objects.create(search=search)
         assert search.num_cards() == n
+
+    # @pytest.mark.parametrize('n1,n2', [
+    #     (1, 1),
+    #     (1, 5),
+    #     (5, 1),
+    #     (5, 5),
+    #     (random.randint(1, 10), random.randint(1, 10))
+    # ])
+    # def test_num_flights(self, search, basic_flight_dict, n1, n2):
+    #     for i in range(n1):
+    #         sc = SearchCard.objects.create(search=search)
+    #         for i in range(n2):
+    #             basic_flight_dict.update({'search_card': sc})
+    #             Flight.objects.create(**basic_flight_dict)
+    #
+    #         assert sc.num_flights() == n2
+    #     assert search.num_flights() == n1*n2
 
     # def test_number_flights(self, basic_flight_dict, search):
     #     n = random.randint(1, 10)

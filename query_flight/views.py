@@ -5,7 +5,8 @@ from .models import Airport
 # from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.views import generic
-from .forms import FlightForm, SearchForm
+from .forms import SearchForm
+# from .forms import FlightForm, SearchForm
 from django.urls import reverse
 from .utils import SW_Sel_Multiple
 from .tasks import add
@@ -16,9 +17,9 @@ def index(request):
     # return HttpResponse("Hello, world. You're at the Query Flight index.")
 
 
-def flight_new(request):
-    form = FlightForm()
-    return render(request, 'query_flight/flight.html', {'form': form})
+# def flight_new(request):
+#     form = FlightForm()
+#     return render(request, 'query_flight/flight.html', {'form': form})
 
 
 def dummy(request):

@@ -8,6 +8,7 @@ import numpy as np
 from django.utils import timezone
 import pytz
 from six import string_types
+import numpy as np
 
 
 class AirportManager(models.Manager):
@@ -115,16 +116,91 @@ class Search(models.Model):
     def num_cards(self):
         return len(self.searchcard_set.all())
 
+    def num_flights(self):
+        n_f = 0
+        for card in self.searchcard_set.all():
+            n_f += card.num_flights()
+        return n_f
+
+
+class SearchCardManager(models.Manager):
+    def create(self, search=None, **kwargs):
+
+        # Create the search if it doesn't exist
+        if search is None:
+            search = Search.objects.create()
+
+        # Create and save
+        sc = SearchCard(search=search, **kwargs)
+        sc.save()
+        return sc
+
 
 class SearchCard(models.Model):
     search = models.ForeignKey(
         Search, on_delete=models.CASCADE, verbose_name='Search')
-    # TODO: Add airports and dates for search here.
-    # I can't remember the right way to do this
+
+    objects = SearchCardManager()
 
     def num_flights(self):
-        # TODO: This could be a terrible slow method
-        return len(self.flight_set.all())
+        n_f = 0
+        for case in self.searchcase_set.all():
+            n_f += case.num_flights()
+        return n_f
+
+    def origins(self):
+        return np.unique(self.searchcase_set.values_list('origin_airport',flat=True))
+
+    def destinations(self):
+        return np.unique(self.searchcase_set.values_list('destination_airport', flat=True))
+
+    # TODO: Add Dates here as well.
+
+    def num_case(self):
+        return self.searchcase_set.count()
+
+
+class SearchCaseManager(models.Manager):
+    def create(self, search_card=None, **kwargs):
+
+        # Create the search Card if it doesn't exist
+        if search_card is None:
+            if 'search' in kwargs:
+                search_card = SearchCard.objects.create(search=kwargs['search'])
+            else:
+                search_card = SearchCard.objects.create()
+
+        # Make sure we remove search from any keys for kwargs...
+        kwargs.pop('search', None)
+
+        sc = self.validate_search_case(search_card=search_card, **kwargs)
+        sc.save()
+        return sc
+
+    def validate_search_case(self, **kwargs):
+        sc = SearchCase(**kwargs)
+        if sc.origin_airport == sc.destination_airport:
+            raise ValidationError(_(
+                'Origin and Destination cant be the same: %(a)s'),
+                params={'a': sc.origin_airport.abrev}, code='same_airports')
+        return sc
+
+
+class SearchCase(models.Model):
+    search_card = models.ForeignKey(
+        SearchCard, on_delete=models.CASCADE, verbose_name='Search Card')
+
+    origin_airport = models.ForeignKey(
+        Airport, on_delete=models.CASCADE, related_name='origin_case_set', verbose_name='Origin Airport')
+    destination_airport = models.ForeignKey(
+        Airport, on_delete=models.CASCADE, related_name='destination_case_set', verbose_name='Destination Airport')
+    date = models.DateField()
+
+    # Set the custom Manager
+    objects = SearchCaseManager()
+
+    def num_flights(self):
+        return self.flight_set.count()
 
 
 class FlightManager(models.Manager):
@@ -135,10 +211,6 @@ class FlightManager(models.Manager):
 
     def validate_flight(self, **kwargs):
         flight = Flight(**kwargs)
-        if flight.origin_airport == flight.destination_airport:
-            raise ValidationError(_(
-                'Origin and Destination cant be the same: %(a)s'),
-                params={'a': flight.origin_airport.abrev}, code='same_airports')
         if flight.arrive_time < flight.depart_time:
             raise ValidationError(_(
                 'Must depart before arriving. Depart: %(d)s, Arrive: %(a)s '),
@@ -150,10 +222,6 @@ class FlightManager(models.Manager):
 class Flight(models.Model):
 
     # TODO: Need to add point support...but for now just dollars.
-    origin_airport = models.ForeignKey(
-        Airport, on_delete=models.CASCADE, related_name='origin_set', verbose_name='Origin Airport')
-    destination_airport = models.ForeignKey(
-        Airport, on_delete=models.CASCADE, related_name='destination_set', verbose_name='Destination Airport')
     depart_time = models.DateTimeField(verbose_name='Departure Time')
     arrive_time = models.DateTimeField(verbose_name='Arrival Time')
     wanna_get_away = models.FloatField(
@@ -162,14 +230,14 @@ class Flight(models.Model):
         validators=[MinValueValidator(0)], null=True, blank=True)
     business_select = models.FloatField(
         validators=[MinValueValidator(0)], null=True, blank=True)
-    search_card = models.ForeignKey(
-        SearchCard, on_delete=models.CASCADE, verbose_name='SearchCard')
+    search_case = models.ForeignKey(
+        SearchCase, on_delete=models.CASCADE, verbose_name='SearchCase')
 
     objects = FlightManager()
 
     def __str__(self):
         # Return the title and abrev as the default string
-        return '{} - {} - {}'.format(self.id, self.origin_airport.abrev, self.destination_airport.abrev)
+        return '{} - {} - {}'.format(self.id, self.origin_airport().abrev, self.destination_airport().abrev)
 
     def travel_time(self):
         return self.arrive_time - self.depart_time
@@ -183,8 +251,13 @@ class Flight(models.Model):
             return None
 
     def num_layovers(self):
-        # TODO: This could be a terrible slow method
-        return len(self.layover_set.all())
+        return self.layover_set.count()
+
+    def origin_airport(self):
+        return self.search_case.origin_airport
+
+    def destination_airport(self):
+        return self.search_case.destination_airport
 
 
 class LayoverManager(models.Manager):
