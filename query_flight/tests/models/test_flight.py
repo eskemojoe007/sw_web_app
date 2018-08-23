@@ -1,6 +1,6 @@
 import pytest
 from django.utils import timezone
-from query_flight.models import Flight, Airport
+from query_flight.models import Flight
 from django.core.exceptions import ValidationError
 
 
@@ -75,4 +75,4 @@ class Test_Flight_Model(object):
         basic_flight_dict.update({'arrive_time': basic_flight_dict['depart_time'],
                                   'depart_time': basic_flight_dict['arrive_time']})
         with pytest.raises(ValidationError):
-            f = Flight.objects.create(**basic_flight_dict)
+            Flight.objects.create(**basic_flight_dict)

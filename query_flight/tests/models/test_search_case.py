@@ -28,7 +28,7 @@ class Test_SearchCase_Model(object):
         assert Search.objects.count() == 1
 
         assert Search.objects.all()[0].num_cards() == 1
-        assert SearchCard.objects.all()[0].num_case() == 2
+        assert SearchCard.objects.all()[0].num_cases() == 2
 
         # Remove the search Card to see if it can make one by default
         search_case_dict.pop('search_card', None)

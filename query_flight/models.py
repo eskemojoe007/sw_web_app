@@ -8,7 +8,7 @@ import numpy as np
 from django.utils import timezone
 import pytz
 from six import string_types
-import numpy as np
+import inspect
 
 
 class AirportManager(models.Manager):
@@ -106,7 +106,33 @@ class Airport(models.Model):
             self.state = self.get_state()
 
 
-class Search(models.Model):
+class rollupMixIn(object):
+    def count_subset(self, set_name):
+        '''
+        A relatively dangerous function that I'm not sure is good.
+        Takes in the sub set name, then looks to see if that sub set
+        has a function of the same calling name and goes down the tree.
+
+        at the bottom returns the count of the subset.
+
+        This could be tremendously inefficient...but its cool code.
+        '''
+        sub = getattr(self, set_name)
+        objs = sub.all()
+        fn = inspect.stack()[1].function
+        if len(objs) > 0:
+            if hasattr(objs[0], fn):
+                c = 0
+                for s in objs:
+                    c += getattr(s, fn)()
+                return c
+            else:
+                return sub.count()
+        else:
+            return 0
+
+
+class Search(models.Model, rollupMixIn):
     time = models.DateTimeField(auto_now=True)
     # TODO: Add user information here...
 
@@ -114,13 +140,13 @@ class Search(models.Model):
         return '{} - {}'.format(self.id, self.time)
 
     def num_cards(self):
-        return len(self.searchcard_set.all())
+        return self.count_subset('searchcard_set')
+
+    def num_cases(self):
+        return self.count_subset('searchcard_set')
 
     def num_flights(self):
-        n_f = 0
-        for card in self.searchcard_set.all():
-            n_f += card.num_flights()
-        return n_f
+        return self.count_subset('searchcard_set')
 
 
 class SearchCardManager(models.Manager):
@@ -136,28 +162,29 @@ class SearchCardManager(models.Manager):
         return sc
 
 
-class SearchCard(models.Model):
+class SearchCard(models.Model, rollupMixIn):
     search = models.ForeignKey(
         Search, on_delete=models.CASCADE, verbose_name='Search')
 
     objects = SearchCardManager()
 
     def num_flights(self):
-        n_f = 0
-        for case in self.searchcase_set.all():
-            n_f += case.num_flights()
-        return n_f
+        # n_f = 0
+        # for case in self.searchcase_set.all():
+        #     n_f += case.num_flights()
+        # return n_f
+        return self.count_subset('searchcase_set')
 
     def origins(self):
-        return np.unique(self.searchcase_set.values_list('origin_airport',flat=True))
+        return np.unique(self.searchcase_set.values_list('origin_airport', flat=True))
 
     def destinations(self):
         return np.unique(self.searchcase_set.values_list('destination_airport', flat=True))
 
     # TODO: Add Dates here as well.
 
-    def num_case(self):
-        return self.searchcase_set.count()
+    def num_cases(self):
+        return self.count_subset('searchcase_set')
 
 
 class SearchCaseManager(models.Manager):
@@ -186,7 +213,7 @@ class SearchCaseManager(models.Manager):
         return sc
 
 
-class SearchCase(models.Model):
+class SearchCase(models.Model, rollupMixIn):
     search_card = models.ForeignKey(
         SearchCard, on_delete=models.CASCADE, verbose_name='Search Card')
 
@@ -199,8 +226,11 @@ class SearchCase(models.Model):
     # Set the custom Manager
     objects = SearchCaseManager()
 
+    def __str__(self):
+        return '{} - {} - {} - {}'.format(self.pk, self.origin_airport.abrev, self.destination_airport.abrev, self.date)
+
     def num_flights(self):
-        return self.flight_set.count()
+        return self.count_subset('flight_set')
 
 
 class FlightManager(models.Manager):
@@ -216,10 +246,12 @@ class FlightManager(models.Manager):
                 'Must depart before arriving. Depart: %(d)s, Arrive: %(a)s '),
                 params={'a': flight.arrive_time, 'd': flight.depart_time}, code='badtimes')
 
+        # TODO: Create search case if made with no case.
+
         return flight
 
 
-class Flight(models.Model):
+class Flight(models.Model, rollupMixIn):
 
     # TODO: Need to add point support...but for now just dollars.
     depart_time = models.DateTimeField(verbose_name='Departure Time')
@@ -251,7 +283,7 @@ class Flight(models.Model):
             return None
 
     def num_layovers(self):
-        return self.layover_set.count()
+        return self.count_subset('layover_set')
 
     def origin_airport(self):
         return self.search_case.origin_airport
@@ -269,8 +301,8 @@ class LayoverManager(models.Manager):
 
     def validate_layover(self, **kwargs):
         # layover = Layover(**kwargs)
-        if (kwargs['airport'] == kwargs['flight'].origin_airport) or(
-                kwargs['airport'] == kwargs['flight'].destination_airport):
+        if (kwargs['airport'] == kwargs['flight'].search_case.origin_airport) or(
+                kwargs['airport'] == kwargs['flight'].search_case.destination_airport):
 
             raise ValidationError(_(
                 'Layover (%(layover)s) cant happen at origin (%(origin)s) '

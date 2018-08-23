@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Airport, Flight, Layover
+from .models import Airport, Flight, Layover, Search, SearchCard, SearchCase
 from django.utils.translation import gettext_lazy as _
 
 # THis is a custom class used to change the tags for the filter for the airport
@@ -94,3 +94,39 @@ class LayoverAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Layover, LayoverAdmin)
+
+
+class SearchCardInline(admin.TabularInline):
+    model = SearchCard
+    readonly_fields = ('origins', 'destinations', 'num_cases', 'num_flights',)
+    extra = 0
+
+    def has_add_permission(self, request):
+        return False
+
+
+class SearchAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'time', 'num_cards', 'num_cases', 'num_flights')
+
+    readonly_fields = ('pk', 'time','num_cards', 'num_cases', 'num_flights',)
+
+
+
+    inlines = [SearchCardInline]
+
+
+admin.site.register(Search, SearchAdmin)
+
+
+class SearchCaseInline(admin.TabularInline):
+    model = SearchCase
+    readonly_fields = ('num_flights',)
+
+
+class SearchCardAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'origins', 'destinations', 'num_cases', 'num_flights')
+
+    inlines = [SearchCaseInline]
+
+
+admin.site.register(SearchCard, SearchCardAdmin)
