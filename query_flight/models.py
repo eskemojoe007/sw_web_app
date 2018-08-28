@@ -133,11 +133,14 @@ class rollupMixIn(object):
 
 
 class Search(models.Model, rollupMixIn):
-    time = models.DateTimeField(auto_now=True)
+    submitted = models.DateTimeField(auto_now_add=True)
+    started = models.DateTimeField(null=True)
+    completed = models.DateTimeField(null=True)
+
     # TODO: Add user information here...
 
     def __str__(self):
-        return '{} - {}'.format(self.id, self.time)
+        return '{} - {}'.format(self.id, self.submitted)
 
     def num_cards(self):
         return self.count_subset('searchcard_set')
@@ -147,6 +150,30 @@ class Search(models.Model, rollupMixIn):
 
     def num_flights(self):
         return self.count_subset('searchcard_set')
+
+    def total_time(self):
+        return self._seconds_time(self.completed, self.submitted)
+
+    def processing_time(self):
+        return self._seconds_time(self.completed, self.started)
+
+    def queue_time(self):
+        return self._seconds_time(self.started, self.submitted)
+
+    @staticmethod
+    def _seconds_time(t2, t1):
+        if (t2 is not None)  and (t2 is not None):
+            return (t2 - t1).total_seconds()
+        else:
+            return None
+
+    def start(self):
+        self.started = timezone.now()
+        self.save()
+
+    def complete(self):
+        self.completed = timezone.now()
+        self.save()
 
 
 class SearchCardManager(models.Manager):

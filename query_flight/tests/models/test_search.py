@@ -2,21 +2,47 @@ import pytest
 from django.utils import timezone
 from query_flight.models import Search, SearchCard, Flight, SearchCase
 import random
+import time
 
 
 @pytest.mark.django_db
 class Test_Search_Model(object):
 
-    def test_time_now(self):
+    def test_submitted_now(self):
         n = timezone.now()
         s = Search.objects.create()
-        assert s.time >= n
+        assert s.submitted >= n
 
-    def test_time_input(self):
+    def test_submitted_input(self):
         '''We should not be able to set it differently...just leave it alone'''
         n = timezone.now()
-        s = Search.objects.create(time=n + timezone.timedelta(hours=5))
-        assert s.time >= n
+        s = Search.objects.create(submitted=n + timezone.timedelta(hours=5))
+        assert s.submitted >= n
+
+    def test_seconds_time(self):
+        s = Search.objects.create()
+        n = timezone.now()
+        diff = timezone.timedelta(seconds=60)
+        assert s._seconds_time(n+diff, n) == 60
+        assert s._seconds_time(timezone.now(), n) >= 0
+        diff = timezone.timedelta(minutes=60)
+        assert s._seconds_time(n+diff, n) == 60*60
+
+    def test_start(self):
+        s = Search.objects.create()
+        assert s.total_time() is None
+        assert s.processing_time() is None
+        assert s.queue_time() is None
+        time.sleep(1)
+        s.start()
+        time.sleep(0.5)
+        s.complete()
+
+        assert s.total_time() >= 1.5
+        assert s.processing_time() >= 0.5
+        assert s.processing_time() < 1.0
+        assert s.queue_time() >= 1
+        assert s.queue_time() < 1.5
 
     @pytest.mark.parametrize('n', [
         1, 5, 10, random.randint(1, 10)

@@ -106,11 +106,11 @@ class SearchCardInline(admin.TabularInline):
 
 
 class SearchAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'time', 'num_cards', 'num_cases', 'num_flights')
+    list_display = ('pk', 'submitted', 'started', 'completed',
+                    'num_cards', 'num_cases', 'num_flights')
 
-    readonly_fields = ('pk', 'time','num_cards', 'num_cases', 'num_flights',)
-
-
+    readonly_fields = ('pk', 'submitted', 'num_cards',
+                       'num_cases', 'num_flights',)
 
     inlines = [SearchCardInline]
 
@@ -124,7 +124,8 @@ class SearchCaseInline(admin.TabularInline):
 
 
 class SearchCardAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'origins', 'destinations', 'num_cases', 'num_flights')
+    list_display = ('pk', 'origins', 'destinations',
+                    'num_cases', 'num_flights')
 
     inlines = [SearchCaseInline]
 

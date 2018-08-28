@@ -5,7 +5,6 @@ from . import serializers
 from .models import Airport, Flight, Layover, Search, SearchCard
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.settings import api_settings
 
 
 
@@ -23,7 +22,8 @@ class SearchViewSet(mixins.CreateModelMixin,
     serializer_class = serializers.SearchSerializer
 
 
-class SearchCardViewSet(mixins.RetrieveModelMixin,
+class SearchCardViewSet(mixins.CreateModelMixin,
+                        mixins.RetrieveModelMixin,
                         mixins.DestroyModelMixin,
                         mixins.ListModelMixin,
                         viewsets.GenericViewSet):
@@ -43,13 +43,6 @@ class SearchCardViewSet(mixins.RetrieveModelMixin,
         serializer.save()
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED, headers=headers)
-
-    def get_success_headers(self, data):
-        try:
-            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
-        except (TypeError, KeyError):
-            return {}
-
 
 
 class FlightViewSet(viewsets.ModelViewSet):
