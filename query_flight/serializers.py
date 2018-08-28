@@ -86,15 +86,6 @@ class FlightGetSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'travel_time', 'min_price',)
 
 
-class SearchSerializer(serializers.ModelSerializer):
-    flight_set = FlightGetSerializer(read_only=True, many=True, required=False)
-
-    class Meta:
-        model = Search
-        fields = ('id', 'time', 'num_flights', 'flight_set')
-        # read_only_fields = ('time','num_flights')
-
-
 class FlightPostSerializer(serializers.ModelSerializer):
     # origin_airport = AirportPKSerializer(read_only=False,required=True)
     # destination_airport = AirportSerializer(read_only=False,required=True)
@@ -151,11 +142,94 @@ class SearchCardGetSerializer(serializers.ModelSerializer):
         )
 
 
-class AirportCodeSerializer(serializers.Serializer):
-    AirportCode = serializers.CharField(max_length=4)
+class SearchSerializer(serializers.ModelSerializer):
+    searchcard_set = SearchCardGetSerializer(read_only=True, many=True)
+    # flight_set = FlightGetSerializer(read_only=True, many=True, required=False)
 
-    def validate_AirportCode(self, value):
-        return self._check_airport(value)
+    class Meta:
+        model = Search
+        fields = ('id', 'submitted', 'started', 'completed', 'total_time',
+                  'num_cards', 'searchcard_set')
+        read_only_fields = ('submitted', 'total_time', 'num_cards')
+
+
+class AirportListField(serializers.ListField):
+    child = serializers.CharField(max_length=4)
+
+
+class DateListField(serializers.ListField):
+    child = serializers.DateField()
+
+
+class SearchCardPostSerializer(serializers.Serializer):
+    destinationAirportCodes = AirportListField()
+    originationAirportCodes = AirportListField()
+    dates = DateListField()
+    search_card = SearchCardGetSerializer(read_only=True)
+
+    class SearchCardTemp(object):
+        def __init__(
+            self, destinationAirportCodes,
+            originationAirportCodes, dates, search_card, search_cases
+        ):
+            self.originationAirportCodes = originationAirportCodes
+            self.destinationAirportCodes = destinationAirportCodes
+            self.dates = dates
+            self.search_card = search_card
+            self.search_cases = search_cases
+
+    def create(self, validated_data):
+        destinationAirportCodes = validated_data['destinationAirportCodes']
+        originationAirportCodes = validated_data['originationAirportCodes']
+        dates = validated_data['dates']
+
+        sc = SearchCard.objects.create()
+
+        s = [field for field in [destinationAirportCodes,
+                                 originationAirportCodes, dates]]
+        raw_cases = itertools.product(*s)
+        for case in raw_cases:
+            SearchCase.objects.create(search_card=sc,
+                                      date=case[2],
+                                      origin_airport=Airport.objects.get(
+                                          pk=case[1]),
+                                      destination_airport=Airport.objects.get(pk=case[0]))
+
+        return self.SearchCardTemp(
+            destinationAirportCodes, originationAirportCodes,
+            dates, sc, sc.searchcase_set
+        )
+
+    def validate_destinationAirportCodes(self, value):
+        return self._check_airports(value)
+
+    def validate_originationAirportCodes(self, value):
+        return self._check_airports(value)
+
+    def validate_dates(self, value):
+        if self._duplicates(value):
+            raise ValidationError(_(
+                'Duplicated input dates: %(key)s'),
+                params={'key': value}, code='duplicate_dates')
+
+        n = timezone.now().date()
+        for date in value:
+            if date < n:
+                raise ValidationError(_(
+                    'Invalid date - date is in the past: current date - %(now)s, your date - %(your)s'),
+                    params={'now': n, 'your': date}, code='past_date')
+        return value
+
+    def _check_airports(self, code_list):
+        clean_codes = []
+        for code in code_list:
+            clean_codes.append(self._check_airport(code))
+
+        if self._duplicates(code_list):
+            raise ValidationError(_(
+                'Repeat airports in input %(key)s'),
+                params={'key': clean_codes}, code='bad_airports')
+        return clean_codes
 
     def _check_airport(self, code):
         if not Airport.objects.filter(abrev__iexact=code).exists():
@@ -166,74 +240,21 @@ class AirportCodeSerializer(serializers.Serializer):
         else:
             return Airport.objects.get(abrev__iexact=code).abrev
 
+    @staticmethod
+    def _intersect(a, b):
+        return not set(a).isdisjoint(b)
 
-class SearchCardPostSerializer(serializers.Serializer):
-    # destinationAirportCode = serializers.CharField(max_length=4, write_only=True)
-    # originationAirportCode = serializers.CharField(max_length=4, write_only=True)
-    destinationsAirportCode = AirportCodeSerializer(many=True)
-    originationsAirportCode = AirportCodeSerializer(many=True)
-    search_card = SearchCardGetSerializer(read_only=True)
-    search = SearchSerializer(read_only=True)
+    @staticmethod
+    def _duplicates(a):
+        return len(a) != len(set(a))
 
-    # search = serializers.PrimaryKeyRelatedField(
-    #     read_only=False, queryset=Search.objects.all())
-
-    class SearchCardTemp(object):
-        def __init__(self, destinationsAirportCode,
-                     originationsAirportCode, search, search_card, search_cases
-                     ):
-            self.originationsAirportCode = originationsAirportCode
-            self.destinationsAirportCode = destinationsAirportCode
-            self.search = search
-            self.search_card = search_card
-            self.search_cases = search_cases
-
-    def create(self, validated_data):
-        destinationsAirportCode = validated_data['destinationsAirportCode']
-        originationsAirportCode = validated_data['originationsAirportCode']
-
-        # search = validated_data['search']
-
-        sc = SearchCard.objects.create()
-        search = sc.search
-
-        s = [field for field in [destinationsAirportCode, originationsAirportCode]]
-        raw_cases = itertools.product(*s)
-
-        for case in raw_cases:
-            SearchCase.objects.create(search_card=sc,
-                                      date=timezone.now().date(),
-                                      origin_airport=Airport.objects.get(
-                                          pk=case[1]['AirportCode']),
-                                      destination_airport=Airport.objects.get(pk=case[0]['AirportCode']))
-
-        # self.cases = []
-        # for case in raw_cases:
-        #     d = {}
-        #     for key, value in zip(self.required_keys, case):
-        #         d[key] = value
-        #     self.cases.append(d)
-
-        return self.SearchCardTemp(destinationsAirportCode,
-                              originationsAirportCode,
-                              search,
-                              sc,
-                              sc.searchcase_set)
-
-    # def validate_destinationAirportCode(self, value):
-    #     return self._check_airport(value)
-    #
-    # def validate_originationAirportCode(self, value):
-    #     return self._check_airport(value)
-    #
-    # def _check_airport(self, code):
-    #     if not Airport.objects.filter(abrev__iexact=code).exists():
-    #         raise ValidationError(_(
-    #             'Specified Airport is not valid: %(key)s'),
-    #             params={'key': code}, code='bad_airport')
-    #         return code
-    #     else:
-    #         return Airport.objects.get(abrev__iexact=code).abrev
+    def validate(self, attrs):
+        if self._intersect(attrs['destinationAirportCodes'],
+                           attrs['originationAirportCodes']):
+            raise ValidationError(_(
+                'Cannot repeat airport in both destination and origin'),
+                code='origin destination non-unique')
+        return attrs
 
 
 class SearchPostSerializer(serializers.Serializer):
