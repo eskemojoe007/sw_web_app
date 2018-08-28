@@ -181,7 +181,8 @@ class SearchCard(models.Model, rollupMixIn):
     def destinations(self):
         return np.unique(self.searchcase_set.values_list('destination_airport', flat=True))
 
-    # TODO: Add Dates here as well.
+    def dates(self):
+        return np.unique(self.searchcase_set.values_list('date', flat=True))
 
     def num_cases(self):
         return self.count_subset('searchcase_set')

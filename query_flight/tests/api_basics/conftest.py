@@ -1,6 +1,6 @@
 import pytest
 from rest_framework.test import APIClient
-from query_flight.models import Airport
+# from query_flight.models import Airport
 
 
 @pytest.fixture(scope='session')

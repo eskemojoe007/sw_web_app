@@ -10,6 +10,7 @@ router = DefaultRouter()
 router.register('airports', apiviews.AirportViewSet, base_name='airports')
 router.register('flights', apiviews.FlightViewSet, base_name='flights')
 router.register('searchs', apiviews.SearchViewSet, base_name='searchs')
+router.register('searchcards', apiviews.SearchCardViewSet, base_name='searchcards')
 
 
 urlpatterns = [

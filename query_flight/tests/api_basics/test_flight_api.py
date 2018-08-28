@@ -26,8 +26,7 @@ def test_post_get_flight(apiclient, flight_list, post_flight_dict):
     # Make sure it saved and put it self into the test db
     flight = Flight.objects.get()
     assert flight.destination_airport.abrev == post_flight_dict['destination_airport']
-    assert flight.travel_time(
-    ) == post_flight_dict['arrive_time'] - post_flight_dict['depart_time']
+    assert flight.travel_time() == post_flight_dict['arrive_time'] - post_flight_dict['depart_time']
     assert flight.min_price() == post_flight_dict['wanna_get_away']
     assert flight.wanna_get_away == post_flight_dict['wanna_get_away']
 
