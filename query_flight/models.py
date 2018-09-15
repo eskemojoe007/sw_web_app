@@ -26,7 +26,6 @@ class AirportManager(models.Manager):
 
 
 class Airport(models.Model):
-
     title = models.CharField(
         verbose_name='Long Name of Airport', max_length=50)
     timezone = TimeZoneField(default='US/Eastern')
@@ -108,7 +107,9 @@ class Airport(models.Model):
 
 class rollupMixIn(object):
     def count_subset(self, set_name):
-        '''
+        """
+        Return count of subset by set_name.
+
         A relatively dangerous function that I'm not sure is good.
         Takes in the sub set name, then looks to see if that sub set
         has a function of the same calling name and goes down the tree.
@@ -116,7 +117,7 @@ class rollupMixIn(object):
         at the bottom returns the count of the subset.
 
         This could be tremendously inefficient...but its cool code.
-        '''
+        """
         sub = getattr(self, set_name)
         objs = sub.all()
         fn = inspect.stack()[1].function
@@ -162,7 +163,7 @@ class Search(models.Model, rollupMixIn):
 
     @staticmethod
     def _seconds_time(t2, t1):
-        if (t2 is not None)  and (t2 is not None):
+        if (t2 is not None) and (t2 is not None):
             return (t2 - t1).total_seconds()
         else:
             return None

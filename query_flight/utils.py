@@ -55,7 +55,6 @@ class SW_Sel_base(object):
                                 executable_path=chrome_driver)
 
     def create_search(self):
-
         if not self._check_key_exist('search'):
             self.search = Search.objects.create()
             return self.search
@@ -84,7 +83,7 @@ class SW_Sel_base(object):
         return hasattr(self, key)
 
 
-class SW_Sel_Multiple(SW_Sel_base):
+class SW_Sel_Card(SW_Sel_base):
     def __init__(self, browser=None, **kwargs):
         super().__init__(browser=browser, **kwargs)
 
@@ -114,7 +113,7 @@ class SW_Sel_Multiple(SW_Sel_base):
                           **case).save_all_flights(**kwargs)
 
 
-class SW_Sel_Single(SW_Sel_base):
+class SW_Sel_Case(SW_Sel_base):
 
     def get_sw_url(self):
         payload = {

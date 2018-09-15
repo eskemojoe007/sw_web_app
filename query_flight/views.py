@@ -8,7 +8,7 @@ from django.views import generic
 from .forms import SearchForm
 # from .forms import FlightForm, SearchForm
 from django.urls import reverse
-from .utils import SW_Sel_Multiple
+from .utils import SW_Sel_Card
 from .tasks import add
 
 
@@ -55,9 +55,9 @@ def search(request):
                 '%Y-%m-%d')
             # returnDate = form.cleaned_data['return_date'].strftime('%Y-%m-%d')
 
-            sw = SW_Sel_Multiple(departureDate=departureDate,
-                                 destinationAirportCode=destinationAirportCode,
-                                 originationAirportCode=originationAirportCode)
+            sw = SW_Sel_Card(departureDate=departureDate,
+                             destinationAirportCode=destinationAirportCode,
+                             originationAirportCode=originationAirportCode)
             # returnDate=returnDate)
             sw.save_all_flights()
             sw.browser.quit()

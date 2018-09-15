@@ -7,7 +7,6 @@ from rest_framework.response import Response
 from rest_framework import status
 
 
-
 class AirportViewSet(viewsets.ModelViewSet):
     queryset = Airport.objects.all()
     serializer_class = serializers.AirportSerializer
@@ -37,7 +36,6 @@ class SearchCardViewSet(mixins.CreateModelMixin,
         return serializers.SearchCardGetSerializer
 
     def create(self, request, *args, **kwargs):
-        print(self.action)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -69,3 +67,10 @@ class LayoverList(generics.ListCreateAPIView):
 
 class SearchPost(generics.CreateAPIView):
     serializer_class = serializers.SearchPostSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED, headers=headers)

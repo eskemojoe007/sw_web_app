@@ -5,8 +5,9 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 import pytz
 import six
-from .utils import SW_Sel_Single
+# from .utils import SW_Sel_Single
 import itertools
+from rest_framework.reverse import reverse
 # import itertools
 
 
@@ -31,11 +32,12 @@ class AirportSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
     def validate(self, attrs):
-        '''
+        """Validate input values.
+
         By default we don't need country or state...here we make you need it
         This is similar to model code, but needs to be added here as to
         trigger 400 errors and some other basic validation
-        '''
+        """
 
         if not attrs.get('country'):
             airport = Airport.objects.lookup_missing(**attrs)
@@ -161,44 +163,10 @@ class DateListField(serializers.ListField):
     child = serializers.DateField()
 
 
-class SearchCardPostSerializer(serializers.Serializer):
+class SearchCardGenericPostSerializer(serializers.Serializer):
     destinationAirportCodes = AirportListField()
     originationAirportCodes = AirportListField()
     dates = DateListField()
-    search_card = SearchCardGetSerializer(read_only=True)
-
-    class SearchCardTemp(object):
-        def __init__(
-            self, destinationAirportCodes,
-            originationAirportCodes, dates, search_card, search_cases
-        ):
-            self.originationAirportCodes = originationAirportCodes
-            self.destinationAirportCodes = destinationAirportCodes
-            self.dates = dates
-            self.search_card = search_card
-            self.search_cases = search_cases
-
-    def create(self, validated_data):
-        destinationAirportCodes = validated_data['destinationAirportCodes']
-        originationAirportCodes = validated_data['originationAirportCodes']
-        dates = validated_data['dates']
-
-        sc = SearchCard.objects.create()
-
-        s = [field for field in [destinationAirportCodes,
-                                 originationAirportCodes, dates]]
-        raw_cases = itertools.product(*s)
-        for case in raw_cases:
-            SearchCase.objects.create(search_card=sc,
-                                      date=case[2],
-                                      origin_airport=Airport.objects.get(
-                                          pk=case[1]),
-                                      destination_airport=Airport.objects.get(pk=case[0]))
-
-        return self.SearchCardTemp(
-            destinationAirportCodes, originationAirportCodes,
-            dates, sc, sc.searchcase_set
-        )
 
     def validate_destinationAirportCodes(self, value):
         return self._check_airports(value)
@@ -257,55 +225,72 @@ class SearchCardPostSerializer(serializers.Serializer):
         return attrs
 
 
-class SearchPostSerializer(serializers.Serializer):
-    destinationAirportCode = serializers.CharField(max_length=4)
-    originationAirportCode = serializers.CharField(max_length=4)
-    departureDate = serializers.DateField()
-    # returnDate = serializers.DateField()
+class SearchCardPostSerializer(SearchCardGenericPostSerializer):
+    search_card = SearchCardGetSerializer(read_only=True)
+
+    class SearchCardClass(object):
+        """Basic temporary class for post return."""
+
+        def __init__(
+            self, destinationAirportCodes,
+            originationAirportCodes, dates, search_card, search_cases
+        ):
+            """Set objects."""
+
+            self.originationAirportCodes = originationAirportCodes
+            self.destinationAirportCodes = destinationAirportCodes
+            self.dates = dates
+            self.search_card = search_card
+            self.search_cases = search_cases
 
     def create(self, validated_data):
-        sw = SW_Sel_Single(departureDate=validated_data['departureDate'],
-                           destinationAirportCode=validated_data['destinationAirportCode'],
-                           originationAirportCode=validated_data['originationAirportCode'])
-        # originationAirportCode=validated_data['originationAirportCode'],
-        # returnDate=validated_data['returnDate'])
-        sw.save_all_flights()
-        sw.browser.quit()
-        return sw
+        destinationAirportCodes = validated_data['destinationAirportCodes']
+        originationAirportCodes = validated_data['originationAirportCodes']
+        dates = validated_data['dates']
 
-    def validate_destinationAirportCode(self, value):
-        return self._check_airport(value)
+        sc = SearchCard.objects.create()
 
-    def validate_originationAirportCode(self, value):
-        return self._check_airport(value)
+        s = [field for field in [destinationAirportCodes,
+                                 originationAirportCodes, dates]]
+        raw_cases = itertools.product(*s)
+        for dest, origin, date in raw_cases:
+            SearchCase.objects.create(search_card=sc,
+                                      date=date,
+                                      origin_airport=Airport.objects.get(
+                                          pk=origin),
+                                      destination_airport=Airport.objects.get(pk=dest))
 
-    def _check_airport(self, code):
-        if not Airport.objects.filter(abrev__iexact=code).exists():
-            raise ValidationError(_(
-                'Specified Airport is not valid: %(key)s'),
-                params={'key': code}, code='bad_airport')
-            return code
-        else:
-            return Airport.objects.get(abrev__iexact=code).abrev
+        return self.SearchCardClass(
+            destinationAirportCodes, originationAirportCodes,
+            dates, sc, sc.searchcase_set
+        )
 
-    def validate_departureDate(self, value):
-        self._check_date_past(value)
-        return value
 
-    # def validate_returnDate(self,value):
-    #     self._check_date_past(value)
-    #     return value
+class SearchPostSerializer(serializers.Serializer):
+    cards = SearchCardGenericPostSerializer(many=True, required=True)
+    search_id = serializers.IntegerField(read_only=True)
+    search_url = serializers.CharField(read_only=True)
+    # search = SearchSerializer(read_only=True)
+    # TODO: Make the search optional input to update existing searches.
+    # we may need to make significant model updates to accmplish however (like start)
+    # Stop etc times...those could be an attached model.
+    # search = serializers.PrimaryKeyRelatedField(
+    #     read_only=False, queryset=Airport.objects.all(), required=False)
 
-    # def _check_date_past(self, input_date):
-    #     n = timezone.now().date()
-    #     if input_date < n:
-    #         raise ValidationError(_('Invalid date - date is in the past: current date - %(now)s, your date - %(your)s'),
-    #                               params={'now': n, 'your': input_date}, code='past_date')
+    class SearchClass(object):
+        """Basic temporary class for post return."""
 
-    # def validate(self,attrs):
-    #     if attrs['returnDate'] < attrs['departureDate']:
-    #         raise ValidationError(_(
-    #             'Invalid date - return must be after departure: return date - %(ret)s, departur date - %(dep)s'),
-    #             params={'ret':attrs['returnDate'],'dep':attrs['departureDate']},
-    #             code='bad_date')
-    #     return attrs
+        def __init__(self, search_id, search_url):
+            """Set objects."""
+
+            self.search_id = search_id
+            self.search_url = search_url
+            # self.cards = cards
+            # self.celery_url = celery_url
+
+    def create(self, validated_data):
+        search = Search.objects.create()
+
+        return self.SearchClass(
+            search.id,
+            reverse('query_flight:searchs-detail', args=[search.id]))
