@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 django = "*"
 django-split-settings = "*"
+django-rest-knox = "*"
+djangorestframework = "*"
 
 [dev-packages]
 ipython = "*"

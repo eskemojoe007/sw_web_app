@@ -33,7 +33,7 @@ jobs:
           name: install npm dependencies
           command: |
             cd frontend
-            sudo npm install --dev
+            sudo npm install
             cd ..
       - save_cache:
           key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
