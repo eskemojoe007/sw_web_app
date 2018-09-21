@@ -21,13 +21,11 @@ class TestUser(object):
 
         assert client.login(email=typical_user.email, password=new_pass)
 
-    @pytest.mark.xfail
     def test_bad_email(self, password):
-        # TODO: Make this actually run!
         email = 'invalid email address'
         with pytest.raises(ValidationError):
-            user = get_user_model().objects.create(email=email, password=password)
-            print(user.email)
-            # User = get_user_model()
-            # user = User(email=email)
-            # user.full_clean()
+            # user = get_user_model().objects.create(email=email, password=password)
+            # print(user.email)
+            User = get_user_model()
+            user = User(email=email)
+            user.full_clean()

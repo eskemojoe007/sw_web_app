@@ -1,14 +1,24 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from .models import User
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
-    """docstring for CreateUserSerializer."""
 
     class Meta:
         model = User
-        fields = ('id', 'username', ' password')
+        fields = ('id', 'email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        pass
+        user = User.objects.create_user(
+            validated_data['email'],
+            password=validated_data['password'])
+
+        return user
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """Return Serializer after user Creation"""
+    class Meta:
+        model = User
+        fields = ('id', 'email')
