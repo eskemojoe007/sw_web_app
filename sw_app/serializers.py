@@ -1,5 +1,7 @@
 from rest_framework import serializers
+from django.contrib.auth import authenticate
 from .models import User
+from django.utils.translation import gettext as _
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -22,3 +24,17 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'email')
+
+
+class LoginUserSerializer(serializers.Serializer):
+    """Used to login users with password and validate"""
+
+    email = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        user = authenticate(**data)
+        if user and user.is_active:
+            return user
+
+        raise serializers.ValidationError(_('Unable to log in with provided credentials'))
